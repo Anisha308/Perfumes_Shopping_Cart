@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+
+
+    <!-- Add Bootstrap CSS -->
+    <link rel="stylesheet" href="path/to/bootstrap.css">
+
+    <script src="path/to/bootstrap.js"></script>
+    <link rel="stylesheet" href="../../vendors/typicons/typicons.css">
+    <link rel="stylesheet" href="../../vendors/css/vendor.bundle.base.css">
+    <link rel="stylesheet" href="../../css/vertical-layout-light/style.css">
+    <link rel="stylesheet" href="../template/css/vertical-layout-light/style.css">
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
+    <style>
+        /* Your CSS styles for the sidebar and content section */
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color:white;
+            margin: 8px;
+        }
+
+        .sidebar {
+            /* Your styles for the sidebar */
+            background-color: #f8f8f8;
+            /* padding: 10px; */
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+            min-height: calc(100vh - 4.625rem);
+            font-family: "Poppins", sans-serif;
+            font-weight: normal;
+            /* padding: 0; */
+            width: 236px;
+            z-index: 11;
+            transition: width 0.25s ease, background 0.25s ease;
+            -webkit-transition: width 0.25s ease, background 0.25s ease;
+            -moz-transition: width 0.25s ease, background 0.25s ease;
+            -ms-transition: width 0.25s ease, background 0.25s ease;
+            box-shadow: 0 5px 10px 0 rgba(230, 230, 243, 0.88);
+            -webkit-box-shadow: 0 5px 10px 0 rgba(230, 230, 243, 0.88);
+            -moz-box-shadow: 0 5px 10px 0 rgba(230, 230, 243, 0.88);
+            -ms-box-shadow: 0 5px 10px 0 rgba(230, 230, 243, 0.88);
+            margin-left: 0.5rem;
+            /* margin-bottom: 2.062rem; */
+            /* border-radius: 60px; */
+            border: 1px solid #e4e4f4;
+        }
+
+        .content-main {
+            /* Your styles for the content section */
+            padding: 600px;
+            /* background-color: #28a745; */
+        }
+
+        
+       
+
+        .form-label {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 8px;
+            text-align: left;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-bottom: 16px;
+            text-align: left;
+        }
+
+        .d-grid {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            color: #fff;
+        }
+
+        .btn-outline-success {
+            background-color: #28a745;
+        }
+
+        
+    </style>
+</head>
+
+<body>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
+    
+
+    <section class="content-main w-100 ">
+        <div class="form-wrapper w-100">
+<!-- addquantity.ejs -->
+
+<form  method="post"> 
+  
+
+                <!-- Name input -->
+                <div class="form-group mb-3">
+                    <label for="selectBox" class="">Choose Product</label>
+                <select class="form-control" name="product" id="categorySelect" required>
+                    <% products.forEach((product)=> { %>
+                        <option value="<%= product._id %>">
+                            <%= product.name %>
+                        </option>
+                        <% }); %>
+                </select>
+                </div>
+                <!-- Description input -->
+                <div class="form-outline mb-4">
+                    <textarea class="form-control" name="size" placeholder="product quantity"></textarea>
+                </div>
+
+                <div class="form-outline mb-4 ">
+                    <textarea class="form-control" name='productPrice' placeholder="product price"></textarea>
+                </div>
+                <div class="form-outline mb-4 ">
+                    <textarea class="form-control" name="stock" placeholder="product stock"></textarea>
+                </div>
+            
+                <div class="d-grid">
+                <a href='/addquantity'>Go to Show Quantity Page</a>
+                        <button class="btn btn-outline-success">Add Quantity</button>
+                    </a>
+                    <p>
+                        <%=(typeof message!=='undefined' ) ? message : "" %>
+                    </p>
+                </div>
+            </form>
+
+        </div>
+    </section>
+</body>
+
+</html>

@@ -1,0 +1,535 @@
+ <%- include('../layouts/userHeader.ejs') %>
+
+<style>
+.custom-cart-icon {
+  font-size: 24px; /* Adjust the size as needed */
+  color: #3498db; /* Change the color as desired */
+  margin-right: 8px; /* Add some spacing between the icon and text */
+}
+	
+
+  .product-card {
+    border: 1px solid #ccc; /* Add a border style and color */
+    padding: 10px; /* Add some padding around the product card */
+    margin-bottom: 20px; /* Add some margin between the product cards */
+ width: 300px;
+
+}
+body {
+  font-family: 'Karla', 'Arial', sans-serif;
+  font-weight: 500;
+
+
+}
+.wishlist-button {
+  position: absolute;
+  top: 10px; /* Adjust the top value as needed */
+  left: 25px; /* Adjust the right value as needed */
+  background-color: transparent;
+  border: none;
+  color: #888888; /* Set the color to white */
+  cursor: pointer;
+  z-index: 1; /* Ensure it's above the image */
+}
+
+.wishlist-button.added-to-wishlist::before {
+  content: '\f004'; /* Unicode for filled heart icon */
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  font-size: 24px;
+}
+.wishlist-button.added-to-wishlist i {
+  color: red; /* Change color to red when added to wishlist */
+}
+
+p {
+  padding: 0;
+  margin: 0;
+}
+
+.wrapper {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding-bottom: 300px;
+}
+
+.filter-price {
+  width: 220px;
+  border: 0;
+  padding: 0;
+  margin: 0; 
+}
+
+.price-title {
+  position: relative;
+  color: black;
+  font-size: 14px;
+  line-height: 1.2em;
+  font-weight: 400;
+}
+
+.price-field {
+  position: relative;
+  width: 100%;
+  height: 36px;
+  box-sizing: border-box;
+  background: rgba(248, 247, 244, 0.2);
+  padding-top: 15px;
+  padding-left: 16px;
+  border-radius: 3px;
+}
+
+.price-field input[type=range] {
+    position: absolute;
+}
+
+/* Reset style for input range */
+
+.price-field input[type=range] {
+  width: 188px;
+  height: 2px; 
+  border: 0;
+  outline: 0;
+  box-sizing: border-box;
+  border-radius: 5px;
+  pointer-events: none;
+  -webkit-appearance: none;
+}
+
+.price-field input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+}
+
+.price-field input[type=range]:active,
+.price-field input[type=range]:focus {
+  outline: 0;
+}
+
+.price-field input[type=range]::-ms-track {
+  width: 188px;
+  height: 2px; 
+  border: 0;
+  outline: 0;
+  box-sizing: border-box;
+  border-radius: 5px;
+  pointer-events: none;
+  background: transparent;
+  border-color: transparent;
+  color: transparent;
+  border-radius: 5px;
+}
+
+/* Style toddler input range */
+
+.price-field input[type=range]::-webkit-slider-thumb { 
+  /* WebKit/Blink */
+    position: relative;
+    -webkit-appearance: none;
+    margin: 0;
+    border: 0;
+    outline: 0;
+    border-radius: 50%;
+    height: 10px;
+    width: 10px;
+    margin-top: -4px;
+    background-color: black;
+    cursor: pointer;
+    cursor: pointer;
+    pointer-events: all;
+    z-index: 100;
+}
+
+.price-field input[type=range]::-moz-range-thumb { 
+  /* Firefox */
+  position: relative;
+  appearance: none;
+  margin: 0;
+  border: 0;
+  outline: 0;
+  border-radius: 50%;
+  height: 10px;
+  width: 10px;
+  margin-top: -5px;
+  background-color: black;
+  cursor: pointer;
+  cursor: pointer;
+  pointer-events: all;
+  z-index: 100;
+}
+
+.price-field input[type=range]::-ms-thumb  { 
+  /* IE */
+  position: relative;
+  appearance: none;
+  margin: 0;
+  border: 0;
+  outline: 0;
+  border-radius: 50%;
+  height: 10px;
+  width: 10px;
+  margin-top: -5px;
+  background-color: black;
+  cursor: pointer;
+  cursor: pointer;
+  pointer-events: all;
+  z-index: 100;
+}
+
+/* Style track input range */
+
+.price-field input[type=range]::-webkit-slider-runnable-track { 
+  /* WebKit/Blink */
+  width: 188px;
+  height: 2px;
+  cursor: pointer;
+  background: black;
+  border-radius: 5px;
+}
+
+.price-field input[type=range]::-moz-range-track { 
+  /* Firefox */
+  width: 188px;
+  height: 2px;
+  cursor: pointer;
+  background: black;
+  border-radius: 5px;
+}
+
+.price-field input[type=range]::-ms-track { 
+  /* IE */
+  width: 188px;
+  height: 2px;
+  cursor: pointer;
+  background: black;
+  border-radius: 5px;
+}
+
+/* Style for input value block */
+
+.price-wrap {
+  display: flex;
+  justify-content: center;
+  color: black;
+  font-size: 14px;
+  line-height: 1.2em;
+  font-weight: 400;
+  margin-bottom: 7px;
+}
+
+.price-wrap-1, 
+.price-wrap-2 {
+  display: flex;
+}
+
+.price-title {
+  margin-right: 5px;
+  backgrund: #d58e32;
+}
+
+.price-wrap_line {
+  margin: 0 10px;
+}
+
+.price-wrap #one, 
+.price-wrap #two {
+  width: 30px;
+  text-align: right;
+  margin: 0;
+  padding: 0;
+  margin-right: 2px;
+  background:  0;
+  border: 0;
+  outline: 0;
+  color: black;
+  font-family: 'Karla', 'Arial', sans-serif;
+  font-size: 14px;
+  line-height: 1.2em;
+  font-weight: 400;
+}
+
+.price-wrap label {
+  text-align: right;
+}
+
+/* Style for active state input */
+    
+.price-field input[type=range]:hover::-webkit-slider-thumb {
+  box-shadow: 0 0 0 0.5px #fff;
+  transition-duration: 0.3s;
+}
+
+.price-field input[type=range]:active::-webkit-slider-thumb {
+  box-shadow: 0 0 0 0.5px #fff;
+  transition-duration: 0.3s;
+}
+ 
+</style>
+	<!-- Start Banner Area -->
+<body>
+	<section class="banner-area organic-breadcrumb">
+		<div class="container">
+			<div class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end">
+				<div class="col-first">
+					<h1>Shop Now</h1>
+					<nav class="d-flex align-items-center">
+						<a href="home">Home<span class="lnr lnr-arrow-right"></span></a>
+						<a href="showProduct">Shop</a>
+						
+					</nav>
+				</div>
+			</div>
+		</div>
+	</section>
+	<!-- End Banner Area -->
+	<div class="container">
+
+
+		<div class="search_w3ls_agileinfo">
+			<div class="cd-main-header">
+				<ul class="cd-header-buttons">
+					<li><a class="cd-search-trigger" href="#cd-search"> <span></span></a></li>
+				</ul>
+			</div>
+			<div id="cd-search" class="cd-search">
+				<form action="/search_pro" method="post">
+					<input  type="search" name="product"  placeholder="Search Here!!" required>
+				</form>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-xl-3 col-lg-4 col-md-5">
+				<div class="sidebar-categories"><div class="sidebar-filter mt-50">
+					<div class="top-filter-head">Filter by Category</div>
+					
+
+					<di class="main-nav-list"><a data-toggle="collapse" href="#beverages" aria-expanded="false" aria-controls="beverages"><span
+								 class="lnr lnr-arrow-right"></span>Category<span class="number"></span></a>
+							<ul class="collapse" id="beverages" data-toggle="collapse" aria-expanded="false" aria-controls="beverages">
+								<% categories.forEach(function(category) { %>
+    <!-- <li class="main-nav-list child"> -->
+        <a href="/filter-by-category?id=<%= category._id %>&page=<%= currentPage %>">
+            <span class="span"><%= category.name %></span>
+        </a>
+    <!-- </li> -->
+<% }); %>
+								</ul>
+						
+			
+		
+<div class="wrapper">
+  <form id="price-filter-form" action="/pricerange" method="post">
+					<div class="top-filter-head">Filter by Price</div><br>
+	<% if(locals.msg) { %>
+						<div id="msg" class="alert alert-success"><%- locals.msg -%></div>
+						<%}%>
+					
+    <div class="price-input">
+      <div class="field">
+        <span>Min</span>
+        <input type="number" class="input-min" name="min_price" placeholder="min" value="min_price">
+      </div>
+      <div class="separator"><br></div>
+      <div class="field">
+        <span>Max</span>
+        <input type="number" class="input-max" name="max_price" placeholder="max" value=" max_price " >
+      </div>
+    </div>
+    <div class="price-field">
+      
+    </div>
+    <div class="price-wrap">
+      <span class="price-title">FILTER</span>
+      <div class="price-wrap-1">
+        <input id="one" value=" min_price ">
+        <label for="one">₹</label>
+      </div>
+      <div class="price-wrap_line"></div>
+      <div class="price-wrap-2">
+        <input id="two" value=" max_price ">
+        <label for="two">₹</label>
+      </div>
+    </div>
+    <button type="submit" class="btn btn-dark">Filter</button>
+  </form>
+</div>
+	</div>
+				</div>
+			</div>
+			<div class="col-xl-9 col-lg-8 col-md-7">
+				<!-- Start Filter Bar -->
+				<div class="filter-bar d-flex flex-wrap align-items-center">
+					<div class="sorting">
+						<!-- <select>
+							<option value="1">Default sorting</option>
+							<option value="1">Default sorting</option>
+							<option value="1">Default sorting</option>
+						</select> -->
+					</div>
+					<div class="sorting mr-auto">
+						<!-- <select>
+							<option value="1">Show 12</option>
+							<option value="1">Show 12</option>
+							<option value="1">Show 12</option>
+						</select> -->
+					</div>
+			<div class="pagination">
+  <% if (hasPrevPage) { %>
+    <a href="?page=<%= prevPage %>" class="prev-arrow"><i class="fa fa-long-arrow-left" aria-hidden="true"></i></a>
+  <% } %>
+  <% for (let i = 1; i <= Math.ceil(totalProducts / ITEMS_PER_PAGE); i++) { %>
+    <a href="?page=<%= i %>" <% if (currentPage === i) { %>class="active"<% } %>><%= i %></a>
+  <% } %>
+  <% if (hasNextPage) { %>
+    <a href="?page=<%= nextPage %>" class="next-arrow"><i class="fa fa-long-arrow-right" aria-hidden="true"></i></a>
+  <% } %>
+</div>
+				</div>
+			
+				<section class="lattest-product-area pb-40 category-list">
+
+<div class="page-area categorie-page p-5">
+  <div class="container">
+    <div class="row">
+	 <% if (products === null || products.length === 0) { %>
+	<h3>No Products</h3>
+	<%}else{%>
+      <% for (let i = 0; i < products.length; i++) { %>
+        <% if (products[i].is_listed) { %>
+         <div class="col-lg-6 mb-4" style="width: 364px; max-height: 500px;">
+  <a href="/productdetail?id=<%= products[i]._id %>" class="product-card-link">
+    <div class="product-card">
+      <img class="img-fluid rounded-circle" style="height: 250px;" src="/uploads/<%= products[i].images[0] %>" alt="">
+      <div class="product-info">
+        <h6><%= products[i].name %></h6>
+        <p><del>&#8377; <%= products[i].price %></del> &#8377; <%= products[i].offerprice %></p>
+      </div>
+  </a>
+  <button class="btn btn-dark custom-button" onclick="addToCart('<%= products[i]._id %>')">
+    Add to Cart
+  </button>
+</div>
+</div>
+
+        <% } %>
+      <% } %>
+	  <%}%>
+    </div>
+  </div>
+</div>
+</body>
+	<script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+
+	<script src="js/vendor/jquery-2.2.4.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4"
+	 crossorigin="anonymous"></script>
+	<script src="js/vendor/bootstrap.min.js"></script>
+	<script src="js/jquery.ajaxchimp.min.js"></script>
+	<script src="js/jquery.nice-select.min.js"></script>
+	<script src="js/jquery.sticky.js"></script>
+	<script src="js/nouislider.min.js"></script>
+	<script src="js/jquery.magnific-popup.min.js"></script>
+	<script src="js/owl.carousel.min.js"></script>
+	<!--gmaps Js-->
+	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCjCGmQ0Uq4exrzdcL6rvxywDDOvfAu6eE"></script>
+	<script src="js/gmaps.min.js"></script>
+	<script src="js/main.js"></script>
+
+	<script>function addToCart(productId) {
+
+      fetch(`/cart/${productId}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          console.log("Response data:", data);
+
+          if (data.status === "success") {
+            	Toastify({
+			  text: `Added to Cart`,
+			  duration: 3000,
+			  className: "info",
+			  gravity: "center",
+			  position: "center",
+			  style: {
+				background: "linear-gradient(109.6deg, rgba(0, 0, 0, 0.93) 11.2%, rgb(63, 61, 61) 78.9%)",
+			  }
+			}).showToast();
+      } else if (data.status === "login_required") {
+        	Toastify({
+			  text: `Please login to add to the cart`,
+			  duration: 3000,
+			  className: "info",
+			  gravity: "center",
+			  position: "center",
+			  style: {
+				background: "linear-gradient(109.6deg, rgba(0, 0, 0, 0.93) 11.2%, rgb(63, 61, 61) 78.9%)",
+			  }
+			}).showToast();
+		} else {
+            	Toastify({
+			  text: `Out of stock!!!`,
+			  duration: 3000,
+			  className: "info",
+			  gravity: "center",
+			  position: "center",
+			  style: {
+				background: "linear-gradient(109.6deg, rgba(0, 0, 0, 0.93) 11.2%, rgb(63, 61, 61) 78.9%)",
+			  }
+			}).showToast();
+          }
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+
+
+		
+    }
+	
+		document.addEventListener("DOMContentLoaded", function() {
+  const rangeInput = document.querySelectorAll(".price-input input"),
+    priceInput = document.querySelectorAll(".price-wrap input"),
+    range = document.querySelector(".price-field input[type=range]");
+
+  const priceGap = 1000;
+
+  rangeInput.forEach(input => {
+    input.addEventListener("input", e => {
+      let minPrice = parseInt(priceInput[0].value),
+        maxPrice = parseInt(priceInput[1].value);
+
+      if (maxPrice - minPrice >= priceGap && maxPrice <= range.max) {
+        range.value = minPrice;
+        range.style.left = `${((minPrice / range.max) * 100)}%`;
+        range.style.right = `${100 - ((maxPrice / range.max) * 100)}%`;
+      }
+    });
+  });
+
+  range.addEventListener("input", e => {
+    let minVal = parseInt(rangeInput[0].value),
+      maxVal = parseInt(rangeInput[1].value);
+
+    if ((maxVal - minVal) < priceGap) {
+      rangeInput[0].value = maxVal - priceGap;
+    } else {
+      priceInput[0].value = minVal;
+      priceInput[1].value = maxVal;
+      range.style.left = `${((minVal / range.max) * 100)}%`;
+      range.style.right = `${100 - ((maxVal / range.max) * 100)}%`;
+    }
+  });
+});
+
+
+
+</script>

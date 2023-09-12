@@ -1,0 +1,168 @@
+<%- include('../layouts/adminHeader.ejs') %>
+
+
+<div class="container-fluid pt-4 px-4">
+  <div class="text-center rounded p-4">
+
+    <div class="d-flex align-items-center justify-content-between mb-4">
+                <h6 class="mb-0">Recent Sales</h6>
+
+      <div>
+        <form action="/filterorder" method="post">
+          <div style="border: 1px solid whitesmoke; padding: 10px; box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);">
+                            <form action="/admin/filtersales" method="post">
+                        <button type="button" class="btn btn-secondary btn_print m-3" value="Download as Pdf"><i class="fas fa-file-pdf"></i> Download as PDF</button>
+<button type="button" class="btn btn-success btn_excel m-3"><i class="fas fa-file-excel"></i> Download as Excel</button>
+
+                                <span>From</span>
+                                <input class="filterdate" onchange="dateverify()" name="preDate" id="pedate" value="<%=preDate%>" type="date">
+                                <span id="error1" style="color: red;"></span>
+                                <span>To</span>
+
+                                <input class="filterdate" onchange="dateverify()" name="postDate" id="podate" value="<%=postDate%>" type="date">
+                                <span id="error2" style="color: red;"></span>
+                                <button type="submit"  style="padding:0 15px;"  class="btn btn-danger ">Filter</button>
+                            </form>
+                        </div>
+         
+      </div>
+    </div>
+    <div class="table-responsive" id="salesexcel">
+      <table id="orderTable" class="table">
+        <thead>
+          <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Client Name</th>
+            <th scope="col">Order Date</th>
+            <th scope="col">Delivered Products</th>
+            <th scope="col">Total Amount</th>
+            <th scope="col">Order Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% if (locals.order_data) { %>
+             <% order_data.forEach(function(orders,
+          index) { %>
+               
+
+                          <% if (orders.status === 'Delivered') { %>
+
+          <tr class="blackcolor">
+            <td><%= index+1 %></td>
+            <td><%= orders.user.username %></td>
+            <td><%= orders.createdAt.toLocaleDateString() %></td>
+            <td>
+              <div class="order_pro">
+                <% orders.items.forEach((items) =>{ %>
+                <ul>
+                  <p><%= items.product.name %></p>
+                </ul>
+                <% }) %>
+              </div>
+            </td>
+            <td>₹<%= orders.total%></td>
+            <td><%= orders.status%></td>
+          </tr>
+                        <% } %>
+
+          <% }) %> <% } %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+
+<%- include('../layouts/adminFooter.ejs') %>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.2/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+
+               
+    <script src="../asset/js/vendors/jquery-3.6.0.min.js"></script>
+
+    <script src="../asset/js/vendors/jquery.fullscreen.min.js"></script>
+
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
+                <script>
+                      $(document).ready(function ($) {
+          $(document).on('click', '.btn_print', function (event) {
+              event.preventDefault();
+var element = document.getElementById('orderTable');
+              console.log(element,'hloo')
+              let randomNumber = Math.floor(Math.random() * (10000000000 - 1)) + 1;
+              var opt = {
+                  margin: 0,
+                  filename: 'SalesReport' + randomNumber + '.pdf',
+                  html2canvas: { scale: 10 },
+                  jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+              };
+  
+              html2pdf().set(opt).from(element).save();
+          });
+      });
+                
+                    function dateverify(){
+                   const error1  =document.getElementById('error1')
+                   const error2 = document.getElementById('error2')
+                   const p = document.getElementById('pedate')
+                   const po = document.getElementById('podate')
+                   const predate =  new Date(p.value)
+                   const postdate = new Date(po.value)
+    
+                   error1.innerText = '';
+                   error2.innerText = '';
+    
+                   if(predate>postdate||predate>Date.now()){
+                    error1.innerText ="Enter A valid Start Date"
+                   }
+                   
+                   if(postdate<predate||postdate>Date.now())
+                    error2.innerText ="Enter A valid End Date"
+                    }
+
+$(document).ready(function ($) {
+    $(document).on('click', '.btn_excel', function (event) {
+        event.preventDefault();
+
+        // Define the data you want to export
+        var data = [];
+        var table = document.getElementById('orderTable');
+        var rows = table.getElementsByTagName('tr');
+        
+        for (var i = 1; i < rows.length; i++) {
+            var rowData = [];
+            var cells = rows[i].getElementsByTagName('td');
+            for (var j = 0; j < cells.length; j++) {
+                rowData.push(cells[j].innerText);
+            }
+            data.push(rowData);
+        }
+
+        // Create a worksheet
+        var ws = XLSX.utils.aoa_to_sheet(data);
+
+        // Create a workbook
+        var wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, 'SalesData');
+
+        // Save the workbook as an Excel file
+        var fileName = 'SalesReport.xlsx';
+        XLSX.writeFile(wb, fileName);
+    });
+});
+
+                    
+                </script>
+            </div>
+        </footer>
+    </main>
+    <script src="../asset/js/vendors/bootstrap.bundle.min.js"></script>
+    <script src="../asset/js/vendors/select2.min.js"></script>
+    <script src="../asset/js/vendors/perfect-scrollbar.js"></script>
+    <!-- Main Script -->
+    <script src="../asset/js/main.js" type="text/javascript"></script>
+</body>
+
+
+<!-- Mirrored from wp.alithemes.com/html/evara/evara-backend/page-products-list.html by HTTrack Website Copier/3.x [XR&CO'2014], Sun, 01 Aug 2021 15:33:12 GMT -->
+</html>

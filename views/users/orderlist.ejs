@@ -1,0 +1,424 @@
+<%- include('../layouts/userHeader.ejs') %>
+
+<link
+  href="https://demo.dashboardpack.com/architectui-html-free/main.css"
+  rel="stylesheet"
+/>
+
+<style>
+  .increased-width {
+    width: 100%;
+  }
+  .app-main__outer {
+    padding: 30px;
+    border: 1px solid white;
+  }
+
+  .app-main__inner {
+    max-width: 90%;
+    margin: 0 auto;
+    padding-top: 190px;
+  }
+
+  /* Styling for different order statuses */
+  .status-pending {
+    font-size: 14px;
+    color: orange;
+  }
+
+  .status-completed {
+    font-size: 14px;
+    color: green;
+  }
+
+  .status-in-progress {
+    font-size: 14px;
+    color: red;
+  }
+
+  /* Adjust SL.NO column width */
+  .slno-column {
+    width: 30px; /* Set the desired width */
+  }
+  .app-page-title,
+  .card-header {
+    background-color: white; /* Creamy color */
+  }
+  /* Additional styles for the table and buttons */
+  .table {
+    border-collapse: separate;
+    border-spacing: 0 10px; /* Add spacing between rows */
+  }
+
+  .table th,
+  .table td {
+    padding: 10px;
+  }
+
+  .cancel-button {
+    background-color: black;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  .cancel-button:hover {
+    background-color: black;
+  }
+
+  /* Update the status cell styles */
+  .status-cell {
+    font-size: 14px;
+    font-weight: bold;
+  }
+.pagination {
+  text-align: right;
+  margin-top: 20px;
+  width: 100%;
+}
+
+  /* Apply styles to the table header */
+  .table thead th {
+    background-color: #f7f7f7;
+  }
+
+  /* Apply hover effect to rows */
+  .table tbody tr:hover {
+    background-color: #f5f5f5;
+  }
+  .app-page-title,
+  .card-header {
+    background-color: rgb(
+      248,
+      247,
+      247
+    ); /* Change this to the color you want */
+  }
+
+  .pagination {
+    text-align: right;
+    margin-top: 20px;
+    width: 100%;
+  }
+  .table-wrapper .pagination-button {
+    font-size: 16px;
+    padding: 10px 20px;
+    width: auto; /* Add this line to allow buttons to adjust width based on content */
+    /* Add any additional styles you want */
+  }
+  .pagination-inner {
+    display: inline-block;
+  }
+  .pagination {
+    color: black;
+    padding: 8px 16px;
+    text-decoration: none;
+    transition: background-color 0.3s;
+    border: 1px solid #ddd;
+  }
+  .pagination a.active {
+    background-color: #4caf50;
+    color: white;
+    border: 1px solid #4caf50;
+  }
+  .pagination a:hover:not(.active) {
+    background-color: #ddd;
+  }
+</style>
+
+<body>
+  <div class="app-main__outer">
+    <div class="app-main__inner">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="main-card mb-3 card">
+            <div class="card-header">ORDER STATUS</div>
+
+            <% if (order_data.length > 0) { %>
+            <div class="table-responsive">
+              <table
+                class="align-middle mb-0 table table-borderless table-striped table-hover increased-width"
+              >
+                <thead>
+                  <tr>
+                    <th class="text-center slno-column">SL.NO</th>
+                    <th class="text-center">User</th>
+                    <th class="text-center">Products</th>
+                    <th class="text-center">Payment</th>
+                    <th class="text-center">Total</th>
+                    <th class="text-center">Ordered Date</th>
+                    <th class="text-center">Status</th>
+                    <th class="text-center">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+<% order_data = order_data.reverse(); %>
+                  
+
+                  <% for (let i = 0; i < order_data.length; i++) { %>
+                  <tr>
+                    <td class="text-center text-muted"><%= i + 1 %></td>
+                    <td class="text-center">
+                      <%= order_data[i].address.name %>,<br />
+                      <%= order_data[i].address.address %>, <%=
+                      order_data[i].address.district %>,<br />
+                      <%= order_data[i].address.state %>, <%=
+                      order_data[i].address.country %>, <%=
+                      order_data[i].address.pincode %>
+                    </td>
+                    <td class="text-center">
+                      <% for (let j = 0; j < order_data[i].items.length; j++) {
+                      %> <% if (order_data[i].items[j].product &&
+                      order_data[i].items[j].product.name) { %> <%=
+                      order_data[i].items[j].product.name %> x <%=
+                      order_data[i].items[j].quantity %><br />
+                      <% } %> <% } %>
+                    </td>
+                    <td class="text-center">
+                      <%= order_data[i].payment_method %>
+                    </td>
+                    <td class="text-center"><%= order_data[i].total %></td>
+                    <td class="text-center">
+                      <%= new
+                      Date(order_data[i].createdAt).toLocaleDateString('en-US',
+                      { weekday: 'short', year: 'numeric', month: 'short', day:
+                      'numeric' }) %>
+                    </td>
+                  <td>
+  <% if (order_data[i].status === 'Pending') { %>
+    <p style="color: orange">Pending</p>
+  <% } else if (order_data[i].status === 'Shipped') { %>
+    <p style="color: blue">Shipped</p>
+  <% } else if (order_data[i].status === 'Delivered') { %>
+    <p style="color: green">Delivered</p>
+    <br>
+    <p>
+      <strong>Return Expiry Date:</strong>
+      <br>
+      <% 
+        var expiryDate = new Date();
+        expiryDate.setDate(expiryDate.getDate() + 7);
+        var options = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' };
+        var formattedExpiryDate = expiryDate.toLocaleDateString('en-US', options);
+      %>
+      <%= formattedExpiryDate %>
+    </p>
+  <% } else if (order_data[i].status === 'Cancelled') { %>
+    <p style="color: red">Cancelled</p>
+  <% } else if (order_data[i].status === 'Refunded') { %>
+    <p style="color: red">Refunded</p>
+  <% } else if (order_data[i].status === 'Returned') { %>
+    <p style="color: purple">Returned</p>
+  <% } %>
+</td>
+<td style="text-align: center">
+  <% if (order_data[i].status === "Delivered") { %>
+    <button class="return-button" data-order-id="<%= order_data[i]._id %>">
+      Return Order
+    </button>
+  <% } else if (order_data[i].status === "Returned") { %>
+    <h6>Returned</h6>
+  <% } else if (order_data[i].status === "Refunded") { %>
+    <h6>Refunded</h6>
+  <% } else if (order_data[i].status === "Cancelled") { %>
+    <h6>Cancelled</h6>
+  <% } else { %>
+    <button class="cancel-button" data-order-id="<%= order_data[i]._id %>">
+      Cancel Order
+    </button>
+  <% } %>
+</td>
+
+  </tr>
+<% } %>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="pagination">
+              <% if (hasPrevPage) { %>
+              <a
+                class="pagination-button prev-button"
+                href="?page=<%= prevPage %>"
+                >&laquo; Previous</a
+              >
+              <% } %> <% if (hasNextPage) { %>
+              <a
+                class="pagination-button next-button"
+                href="?page=<%= nextPage %>"
+                >Next &raquo;</a
+              >
+              <% } %>
+            </div>
+
+            <% } else { %>
+            <div
+              style="
+                display: flex;
+                justify-content: center;
+                text-align: center;
+                align-items: center;
+              "
+            >
+              <h1>No Orders Found!!</h1>
+            </div>
+            <% } %>
+          </div>
+        </div>
+      </div>
+    </div>
+<h6 class="mb-0">
+                      <a href="/profile" class="text-body"
+                        ><i class="fas fa-long-arrow-alt-left me-2"></i>Go back</a
+                      >
+                    </h6>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="http://maps.google.com/maps/api/js?sensor=true"></script>
+  <script
+    type="text/javascript"
+    src="https://demo.dashboardpack.com/architectui-html-free/assets/scripts/main.js"
+  ></script>
+
+  <script>
+    
+$(document).ready(function () {
+  $(".cancel-button").click(function () {
+    const orderId = $(this).data("order-id");
+    const statusCell = $(`.status-cell[data-order-id="${orderId}"]`);
+    const cancelButton = $(this);
+
+    console.log("Starting cancel process for order ID: " + orderId);
+
+    Swal.fire({
+      title: "Cancel Order",
+      text: "Are you sure you want to cancel this order?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes, cancel it",
+      cancelButtonText: "No, keep it",
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        console.log("User confirmed cancellation");
+
+        Swal.fire({
+          title: "Cancel Order",
+          input: "text",
+          text: "Please provide a reason for the cancellation:",
+          showCancelButton: false,
+          confirmButtonText: "Cancel Order",
+          allowOutsideClick: false,
+          preConfirm: (cancelReason) => {
+            if (!cancelReason) {
+              Swal.showValidationMessage("Cancel reason is required");
+            }
+            return cancelReason;
+          },
+        }).then((result) => {
+          if (!result.isConfirmed) {
+            console.log("User canceled reason input");
+            return; // If canceled or closed the dialog, do nothing
+          }
+
+          console.log("User provided cancel reason: " + result.value);
+
+          $.ajax({
+            type: "POST",
+            url: `/cancelOrder/${orderId}`,
+            data: { cancelReason: result.value }, // Send the reason to the server
+            success: function (data) {
+              console.log("Ajax request successful");
+              if (data.success) {
+                Swal.fire("Success!", data.message, "success").then(() => {
+                  window.location.reload();
+                });
+              } else {
+                Swal.fire("Error", data.error, "error");
+              }
+            },
+            error: function (xhr, status, error) {
+              console.error("Ajax request error: " + error);
+              Swal.fire("Error", "An error occurred while cancelling the order.", "error");
+            },
+          });
+        });
+      }
+    });
+  });
+});
+
+
+
+
+let order_data = [];
+$(document).ready(function () {
+  $(".return-button").click(function () {
+    const orderId = $(this).data("order-id");
+
+    Swal.fire({
+      title: "Return Order",
+      text: "Are you sure you want to initiate a return for this order?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes, return it",
+      cancelButtonText: "No, keep it",
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        Swal.fire({
+          title: "Return Order",
+          input: "text",
+          text: "Please provide a reason for the return:",
+          showCancelButton: true,
+          confirmButtonText: "Initiate Return",
+          cancelButtonText: "Cancel",
+          allowOutsideClick: false,
+          preConfirm: (returnReason) => {
+            if (!returnReason) {
+              Swal.showValidationMessage("Return reason is required");
+            }
+            return returnReason;
+          },
+        }).then((result) => {
+          if (!result.isConfirmed) {
+            return; // If canceled or closed the dialog, do nothing
+          }
+
+          // Make an AJAX request to initiate the return process
+          $.ajax({
+            type: "POST",
+            url: `/returnOrder/${orderId}`,
+            data: { returnReason: result.value },
+            success: function (data) {
+           if (data.success) {
+                Swal.fire("Success!", data.message, "success").then(() => {
+                  window.location.reload();
+                });
+              } else {
+                Swal.fire("Error", data.error, "error");
+              }
+            },
+            error: function (xhr, status, error) {
+              console.error(error);
+              Swal.fire("Error", "An error occurred while processing the return request.", "error");
+            },
+          });
+        });
+      }
+    });
+  });
+});
+
+
+
+  </script>
+
+  <%- include('../layouts/userFooter.ejs') %>
+</body>

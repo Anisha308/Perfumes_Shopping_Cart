@@ -1,0 +1,41 @@
+<%- include('../layouts/adminHeader.ejs') %>
+
+<!-- content -->
+
+<div class="container mt-5">
+  <form action="/editcategories" method="post">
+    <div class="form-group">
+      <p class="editcatagory">Edit your category</p>
+      <div class="inner-edit">
+        <label for="name">Name</label>
+        <input
+          type="text"
+          class="form-control"
+          id="name"
+          placeholder="Enter your name"
+          name="category"
+          value="<%=category.name%>"
+        />
+      </div>
+      <div class="form-group">
+        <label for="description">Description</label>
+        <textarea
+          class="form-control"
+          id="description"
+          rows="3"
+          placeholder="Enter a description"
+          name="description"
+        >
+<%=category.description%></textarea
+        >
+      </div>
+
+     
+      <input type="hidden" name="id" value="<%=category._id%>" />
+
+      <button type="submit" class="btn btn-secondary">Submit</button>
+    </div>
+
+    <%- include('../layouts/adminFooter.ejs') %>
+  </form>
+</div>

@@ -1,0 +1,135 @@
+<%- include('../layouts/adminHeader.ejs') %>
+
+<link
+  rel="stylesheet"
+  href="https://fonts.googleapis.com/icon?family=Material+Icons"
+/>
+
+<section class="content-main p-5">
+  <div class="content-header">
+    <div>
+      <h2 class="content-title card-title">Categories</h2>
+      <p>Add, edit or Change Status</p>
+    </div>
+    <form action="/search_category" method="post">
+      <div class="input-group">
+        <!-- Wrap the input and button in an input-group -->
+
+        <input
+          type="text"
+          placeholder="Search Categories"
+          class="form-control bg-white"
+          name="category"
+        />
+        <button type="submit" class="btn btn-primary mt-2">Search</button>
+      </div>
+    </form>
+      <!-- <div class="card"> -->
+      <!-- <div class="card-body"> -->
+      <div class="row p-5">
+        <div class="col-md-3 p-5 shadow mb-5 bg-white rounded">
+          <form action="/addCategory" method="post">
+            <div class="mb-4">
+              <label for="product_name" class="form-label">Name</label>
+              <input
+                type="text"
+                placeholder="Type here"
+                class="form-control"
+                id="product_name"
+                name="name"
+              />
+            </div>
+
+            <div class="mb-4">
+              <label class="form-label">Description</label>
+              <textarea
+                placeholder="Type here"
+                class="form-control"
+                name="description"
+              ></textarea>
+            </div>
+
+            <div class="d-grid">
+              <button class="btn btn-outline-success">Create category</button>
+              <p><%=(typeof message!=='undefined' )?message:""%></p>
+            </div>
+          </form>
+        </div>
+        <div class="col-md-9 p-5">
+          <div class="p-5 table-responsive shadow mb-5 bg-white rounded">
+            <table class="table table-hover">
+              <thead class="table-success">
+                <tr>
+                  <th>Name</th>
+                  <th>Description</th>
+                  <th>Offer</th>
+                  <th>Is Listed</th>
+                  <!-- <th>Action</th> -->
+                  <th>edit</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% categories.forEach((category)=> { %>
+                <tr>
+                  <td><b> <%= category.name %> </b></td>
+                  <!-- <td><%= category.description %></td>  -->
+                  <td
+                    title="<%=category.description %>"
+                    class="tooltip-ellipsis"
+                  >
+                    <%=category.description %>
+                  </td>
+                  <!-- <td>
+        <% if (category.discountPercentage) { %>
+      
+          Discount: <%= category.discountPercentage %>% off
+        <% } else { %>
+          No Offer
+        <% } %>
+      </td> -->
+                  <% if (category.isListed==true) { %>
+                  <td><span style="color: green">Listed</span></td>
+                  <% } else { %>
+                  <td><span style="color: red">Unlisted</span></td>
+                  <% } %>
+
+                  <td>
+                    <div>
+                      <% if (category.isListed==true) { %>
+                      <a
+                        class="dropdown-item"
+                        href="/changeStatus?id=<%=category._id %>"
+                      >
+                        UNLIST</a
+                      >
+
+                      <% } else { %>
+                      <a
+                        class="dropdown-item"
+                        href="/changeStatus?id=<%=category._id %>"
+                        >LIST</a
+                      >
+
+                      <% } %>
+                    </div>
+                  </td>
+                  <td>
+                    <a
+                      class="dropdown-item"
+                      href="/editcategories?id=<%=category._id %>"
+                    >
+                      <i class="fas fa-pen"></i>
+                    </a>
+                  </td>
+                </tr>
+                <% }); %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <%- include('../layouts/adminFooter.ejs') %>
+    </form>
+  </div>
+</section>

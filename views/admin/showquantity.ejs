@@ -1,0 +1,216 @@
+<%- include('../layouts/adminHeader.ejs') %>
+
+    <head>
+        <!-- Head content remains unchanged -->
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                line-height: 1.6;
+                margin: 0;
+                padding: 0;
+                background-color: #f7f7f7;
+            }
+
+            h4 {
+                margin: 0;
+            }
+
+            .quantity-wrapper {
+                border: 1px solid #e0e0e0;
+                border-radius: 8px;
+                padding: 15px;
+                margin-bottom: 20px;
+                background-color: #ffffff;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            }
+
+            .item-container {
+                display: flex;
+                align-items: center;
+                gap: 15px;
+            }
+
+            .item-container img {
+                max-width: 100px;
+                height: auto;
+                border-radius: 5px;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            }
+
+            .col-3 {
+                flex: 0 0 25%;
+            }
+
+            .fw-bold {
+                font-weight: bold;
+            }
+
+            hr {
+                border: none;
+                border-top: 1px solid #e0e0e0;
+                margin: 10px 0;
+            }
+
+            .no-products-msg {
+                text-align: center;
+                font-weight: bold;
+                color: #ff0000;
+            }
+        </style>
+        <div class="col d-flex ">
+            <div class="product-container d-flex flex-column" style="width: 100%;">
+                <div class="product-header d-flex ms-3">
+                    <div class="col-6 d-flex gap-5">
+                        <div>Image</div>
+                        <div style="margin-left: 50px;">Product Name</div>
+                    </div>
+
+                    <div class="col-3">Category</div>
+                </div>
+
+    <body>
+        <div class="mb-5">
+            <% if (products.length> 0) { %>
+                <% products.forEach((item)=> { %>
+                    <div class="quantity-wrapper">
+                        <div class="item-container bg-white p-3 mt-3 d-flex align-items-center gap-5">
+                        <div class="col-5 d-flex gap-5 align-items-center">
+                            <div>
+                                <% if (item.product && item.product.images && item.product.images.length> 0) { %>
+                                    <img src="/uploads/<%= item.product.images[0] %>" alt="Product Image">
+                                    <% } else { %>
+                                        <!-- Display a placeholder image if product images are not available -->
+                                        <img src="/placeholder-image.jpg" alt="Product Image">
+                                        <% } %>
+                            </div>
+                            <div>
+                                <% if (item.product && item.product.name) { %>
+                                    <%= item.product.name %>
+                                        <% } else { %>
+                                            <!-- Display a placeholder name if product name is not available -->
+                                            Product Name not available
+                                            <% } %>
+                            </div>
+                        </div>
+
+                            <div class="col-3 ms-n4">
+                                <% if (item.product && item.product.category) { %>
+                                    <p>
+                                        <%= getCategoryName(item.product.category) %>
+                                    </p>
+                                    <% } else { %>
+                                        <!-- Display a placeholder category if product category is not available -->
+                                        <p>Category not available</p>
+                                        <% } %>
+                            </div>
+                            <div class="mt-3">
+                                <% if (item.quantities && item.quantities.length> 0) { %>
+                                    <!-- Loop through the quantities array for each product -->
+                                    <% item.quantities.forEach((quantity)=> { %>
+                                        <!-- Display quantity information for each size -->
+                                        <% if (quantity.size) { %>
+                                            <p>Size: <span class="fw-bold">
+                                                    <%= quantity.size %>
+                                                </span></p>
+                                            <% } else { %>
+                                                <!-- Handle the case when size information is not available -->
+                                                <p>Size not available</p>
+                                                <% } %>
+
+                                                    <% if (quantity.stock !==undefined) { %>
+                                                        <p>Stock: <span class="fw-bold">
+                                                                <%= quantity.stock %>
+                                                            </span></p>
+                                                        <% } else { %>
+                                                            <!-- Handle the case when stock information is not available -->
+                                                            <p>Stock not available</p>
+                                                            <% } %>
+
+                                                                <% if (quantity.productPrice) { %>
+                                                                    <!-- Display the price for each size -->
+
+                                                                    <p>Price: ₹<span class="fw-bold">
+                                                                            <%= quantity.productPrice %>
+                                                                        </span></p>
+
+                                                                    <% } else { %>
+                                                                        <!-- Handle the case when price information is not available -->
+                                                                        <p>Price not available</p>
+                                                                        <% } %>
+
+                                                                            <!-- Add a separator between quantities -->
+                                                                            <hr>
+                                                                            <% }); %>
+                                                                                <% } else { %>
+                                                                                    <!-- Handle the case when there is no quantity information available for this product -->
+                                                                                    <p>No quantity information available
+                                                                                        for this product.</p>
+                                                                                    <% } %>
+                            </div>
+                        </div>
+                    </div>
+                    <% }); %>
+                        <% } else { %>
+                            <!-- Add a message when 'products' is empty or undefined -->
+                            <p class="no-products-msg">No products available.</p>
+                            <% } %>
+        </div>
+
+
+        <script>
+
+            //Function to Edit the variants
+            const editBtns = document.querySelectorAll('.edit-btns')
+            editBtns.forEach((button) => {
+                button.addEventListener('click', (event) => {
+                    var productId = event.target.getAttribute('data-productId')
+                    var variantId = event.target.getAttribute('data-variantId')
+
+                    $.ajax({
+                        url: `/admin-panel/edit-variant/${productId}/${variantId}`,
+                        method: 'get',
+                        success: (response) => {
+                            
+                            document.getElementById('productPrice').value = response.variants[0].productPrice
+                            document.getElementById('salePrice').value = response.variants[0].salePrice
+                            document.getElementById('stock').value = response.variants[0].stock
+                            document.getElementById('productId').value = response.product
+                            document.getElementById('variantId').value = variantId
+                        }
+                    })
+                    $('#editVariantForm').submit((e) => {
+                        e.preventDefault()
+                        $.ajax({
+                            url: '/admin-panel/edit-variant',
+                            method: 'put',
+                            data: $('#editVariantForm').serialize(),
+                            success: (response) => {
+                                if (response.status) {
+                                    location.reload()
+                                }
+                            }
+                        })
+                    })
+                })
+            })
+
+            //Function to Delete the variants
+            const deleteBtns = document.querySelectorAll('.delete-btns')
+            deleteBtns.forEach((button) => {
+                button.addEventListener('click', (event) => {
+                    var productId = event.target.getAttribute('data-productId')
+                    var variantId = event.target.getAttribute('data-variantId')
+                    $.ajax({
+                        url: '/admin-panel/delete-variant',
+                        method: 'delete',
+                        data: { productId, variantId },
+                        success: (response) => {
+                            if (response.status) {
+                                location.reload()
+                            }
+                        }
+                    })
+                })
+            })
+        </script>
+        <%- include('../layouts/adminFooter.ejs') %>

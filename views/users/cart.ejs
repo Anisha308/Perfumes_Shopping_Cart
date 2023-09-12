@@ -1,0 +1,462 @@
+ <%- include('../layouts/userHeader.ejs') %>
+
+<style>
+  @media (min-width: 1025px) {
+    .h-custom {
+      height: 10vh !important;
+    }
+  }
+
+  .card-registration .select-input.form-control[readonly]:not([disabled]) {
+    font-size: 1rem;
+    line-height: 2.15;
+    padding-left: 0.75em;
+    padding-right: 0.75em;
+  }
+
+  .card-registration .select-arrow {
+    top: 13px;
+  }
+
+  .bg-grey {
+    background-color: #eae8e8;
+  }
+
+  /* @media (min-width: 992px) {
+    .card-registration-2 .bg-grey {
+      /* border-top-right-radius: 16px;
+      border-bottom-right-radius: 16px; */
+    /* }
+  } */ */
+
+  /* @media (max-width: 991px) {
+    .card-registration-2 .bg-grey {
+      border-bottom-left-radius: 16px;
+      border-bottom-right-radius: 16px;
+    }
+  } */
+  .add-padding{
+    padding-bottom: 900px;
+  }
+  
+</style>
+ <!-- <link rel="stylesheet" href='/public/css/main.css'> -->
+ <body>
+<section class="h-10 h-custom" style="background-color: #d2c9ff ; padding-bottom: 80px;">
+  <div class="container py-5 h-100 ">
+    <div class="row d-flex justify-content-center align-items-center h-10">
+      <div class="col-12">
+        <div class="card card-registration card-registration-2" style="border-radius: 15px">
+          <% if (productCount > 0) { %>
+            <div  class="card-body p-0">
+              <div class="row g-0">
+                <div class="col-lg-8">
+                  <div class="p-5">
+                  <div
+                    class="d-flex justify-content-between align-items-center mb-5"
+                  >
+                    <h1 class="fw-bold mb-0 text-black">Shopping Cart</h1>
+                    <h6 class="mb-0 text-muted">
+                      <%= productCount %> products
+                    </h6>
+                  </div>
+                  <hr class="my-4" />
+                  <% products.forEach(function (product, index) { %>
+               
+                  <div
+                    class="row mb-4 d-flex justify-content-between align-items-center"
+                  >
+                    <div class="col-md-2 col-lg-2 col-xl-2">
+                     
+  <% if (product.productId) { %>
+    <img
+      src="../uploads/<%= product.productId.images[0] %>"
+      class="img-fluid rounded-3"
+      alt="parfum"
+    />
+  <% }%>
+                    </div>
+                    <div class="col-md-3 col-lg-3 col-xl-3">
+                      <h6 class="text-muted"></h6>
+                      <h6 class="text-black mb-0">
+                        <%= product.productId?.name %>
+                      </h6>
+                    </div>
+                    <div class="col-md-3 col-lg-3 col-xl-2 d-flex">
+                      <button
+                        class="btn btn-link px-2"
+                        onclick="incrementQuantity('<%= product._id %>','<%= cartId %>')"
+                      >
+                        <i class="fa-sharp fa-light fa-plus"></i>
+
+                      </button>
+
+                      <input
+                      id="quantity_<%= cartId %>_<%= product._id %>"
+                      min="0"
+                      name="quantity"
+                      value="<%= product.quantity %>"
+                      type="number"
+                      class="form-control medium-form-control"
+                      onkeydown="return false"
+                      onwheel="return false"
+                      style="width: 60px;"
+                    />
+                    <span id="quantity-message-<%= cartId %>_<%= product._id %>"></span>
+                    
+                      <button class="btn btn-link px-2"  onclick="decrementStock('<%= product._id %>','<%= cartId %>')" >
+                        <i class="fas fa-minus"></i>
+                      </button>
+                    </div>
+                    <div class="col-md-3 col-lg-2 col-xl-2 offset-lg-1">
+                      <h6 id="product-total-price-<%= cartId %>_<%= product._id %>" class="mb-0">
+  &#8377;<%= product.productId?.offerprice * product.quantity %>
+</h6>
+
+                    </div>
+                    <div class="col-md-1 col-lg-1 col-xl-1 text-end">
+                           <button
+  type="button"
+  class="btn btn-danger"
+  data-toggle="modal"
+  data-target="#deleteModal<%= product._id %>"
+  onclick="showConfirmation('<%= product._id %>')"
+>
+  
+
+  <i class="fas fa-times"></i>
+</button>
+                    </div>
+                  </div>
+                  <hr class="my-4" />
+                  <% }) %>
+
+                  <div class="pt-5">
+                    <h6 class="mb-0">
+                      <a href="/showProduct" class="text-body"
+                        ><i class="fas fa-long-arrow-alt-left me-2"></i>Back to
+                        shop</a
+                      >
+                    </h6>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-lg-4 bg-grey">
+                  <div class="p-5">
+                    <form action="/checkout">
+                      <h3 class="fw-bold mb-5 mt-2 pt-1">Summary</h3>
+                      <hr class="my-4" />
+
+                      <div class="d-flex justify-content-between mb-4">
+                        <h5 class="text-uppercase"><%= productCount %> products</h5>
+                        <% let totalPrice = 0; %>
+                        <% products.forEach(product => { %>
+                          <% totalPrice += product.productId.offerprice * product.quantity; %>
+                        <% }); %>
+                        <h5 id="total-price" class="text-uppercase">
+                          <%= totalPrice.toLocaleString('en-IN')%>
+                        </h5>
+                      </div>
+
+                      <hr class="my-4" />
+
+                      <div class="d-flex justify-content-between mb-4">
+                        <h5 class="text-uppercase">Total Amount</h5>
+                        <% let totalAmount = 0; %>
+                        <% products.forEach(product => { %>
+                          <% totalAmount += product.productId.offerprice * product.quantity; %>
+                        <% }); %>
+                        <h5 id="total-price" class="text-uppercase">
+                          <%= totalAmount.toLocaleString('en-IN') %>
+                        </h5>
+                      </div>
+
+                      <button
+                        type="submit"
+                        class="btn btn-dark btn-block btn-lg"
+                        data-mdb-ripple-color="dark"
+                      >
+                        Checkout
+                      </button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+          <% } else { %>
+            <div class="col-lg-8">
+              <div class="p-5">
+                <h1>No Products in Cart</h1>
+                <a href="/showProduct">Go to shop</a>
+              </div>
+            </div>
+          <% } %>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+ 
+  function setSubtotal() {
+    // Get all product elements in the cart
+    const productElements = document.querySelectorAll(".product-item");
+
+    let subtotal = 0;
+
+    // Loop through each product and calculate its total price
+    productElements.forEach((productElement) => {
+      const priceElement = productElement.querySelector(".product-price");
+      const quantityInput = productElement.querySelector(".product-quantity");
+
+      const price = parseFloat(
+        priceElement.textContent.replace(/[^0-9.]/g, "")
+      );
+      const quantity = parseInt(quantityInput.value, 10);
+
+      subtotal += price * quantity;
+    });
+
+    // Set the subtotal in the DOM
+    const subtotalElement = document.getElementById("subtotal");
+    if (subtotalElement) {
+      subtotalElement.textContent = subtotal.toLocaleString("en-IN");
+    }
+  }
+
+   function incrementQuantity(productId, cartId) {
+    const quantityInput = document.querySelector(
+      `#quantity_${cartId}_${productId}`
+    );
+    // Create the data object with the payload
+    const quantity = parseInt(quantityInput.value);
+   
+
+    const data = { productId, cartId, quantity };
+
+    // Create the fetch request
+    fetch("/incrementQuantity", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        if (data.success) {
+          // Update the DOM with the response data
+          const productTotalPriceElement = document.querySelector(`#product-total-price-${cartId}_${productId}`);
+
+          if (productTotalPriceElement) {
+            productTotalPriceElement.textContent =
+              data.total.toLocaleString("en-IN");
+          }
+
+          // Update the quantity input value
+          quantityInput.value = data.quantity;
+
+          // Show message if the product is out of stock
+          const messageElement = document.querySelector(
+            `#quantity-message-${cartId}`
+          );
+          if (messageElement) {
+            messageElement.textContent = data.mess;
+          }
+
+          // Calculate and update the subtotal
+          setSubtotal()
+        } else {
+          console.log("Error while updating");
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        // Handle error response here
+      });
+  }
+
+  function decrementStock(productId, cartId) {
+    
+    const quantityInput = document.querySelector(
+      `#quantity_${cartId}_${productId}`
+    );
+    // Create the data object with the payload
+    const quantity = parseInt(quantityInput.value);
+    
+  if (quantity === 1) {
+    return;
+  }
+    
+    const data = { productId, cartId, quantity };
+
+   
+   fetch("/decrementQuantity", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  })
+  .then((response) => {
+    if (!response.ok) {
+      throw new Error("Network response was not ok");
+    }
+    return response.json();
+  })
+  .then((data) => {
+    if (data.success) {
+      // Update the quantity input value
+      quantityInput.value = data.quantity;
+      
+      // Update the product total price
+      const productTotalPriceElement = document.querySelector(
+        `#product-total-price-${cartId}_${productId}`
+      );
+      if (productTotalPriceElement) {
+        const newTotalPrice = data.total;
+        productTotalPriceElement.textContent = `₹${newTotalPrice.toLocaleString("en-IN")}`;
+      }
+
+          
+          setSubtotal();
+        } else {
+          console.log("Error while updating");
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        
+      });
+  }
+
+  
+  function updateTotalAmount() {
+    let totalAmount = 0;
+    const productElements = document.querySelectorAll(".product-item");
+    productElements.forEach((productElement) => {
+      const priceElement = productElement.querySelector(".product-price");
+      const quantityInput = productElement.querySelector(".product-quantity");
+
+      const price = parseFloat(
+        priceElement.textContent.replace(/[^0-9.]/g, "")
+      );
+      const quantity = parseInt(quantityInput.value, 10);
+
+      totalAmount += price * quantity;
+    });
+
+    // Update the total amount in the DOM
+    const totalAmountElement = document.getElementById("total-price");
+    if (totalAmountElement) {
+      totalAmountElement.textContent = totalAmount.toLocaleString("en-IN");
+    }
+  }
+  
+// const deleteLinks = document.querySelectorAll(".delete-link");
+
+// deleteLinks.forEach((link) => {
+//   link.addEventListener("click", (event) => {
+//     event.preventDefault();
+//     const productId = link.getAttribute("data-product-id");
+//     const cartId = link.getAttribute("data-cart-id");
+    
+//     // Send an AJAX request to deleteCartItem endpoint
+//     fetch(`/delete/${productId}`, {
+//       method: "DELETE",
+//     })
+//       .then((response) => response.json())
+//       .then((data) => {
+//         if (data.success) {
+//           // Cart item deleted successfully, update the UI as needed
+//           // For example, you might want to remove the corresponding element from the DOM
+//           link.closest(".row").remove();
+//           // Also, update the total price or any other relevant data
+//           updateTotalAmount();
+//         } else {
+//           console.error("Error deleting cart item");
+//         }
+//       })
+//       .catch((error) => {
+//         console.error("Error:", error);
+//       });
+//   });
+// });
+function showConfirmation(productId) {
+  Swal.fire({
+    title: 'Are you sure?',
+    text: 'You are about to delete this item from your cart.',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#d33',
+    cancelButtonColor: '#3085d6',
+    confirmButtonText: 'Yes, delete it!',
+    cancelButtonText: 'Cancel',
+  }).then((result) => {
+    if (result.isConfirmed) {
+      deleteItem(productId);
+      console.log("successs");
+    }
+  });
+}
+
+function deleteItem(productId) {
+  console.log('Deleting item:', productId);
+  
+  fetch(`/delete/${productId}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      productId: productId,
+    }),
+  })
+  .then(response => {
+    if (response.ok) {
+      updateTotalAmount();
+      Swal.fire({
+        icon: 'success',
+        title: 'Item deleted successfully!',
+        showConfirmButton: false,
+        timer: 1500,
+      });
+      setTimeout(function () {
+              window.location.reload();
+            }, 1500);
+    } else {
+      throw new Error('Failed to delete item');
+    }
+  })
+  .catch(error => {
+    console.error('Fetch Error:', error);
+    Swal.fire({
+      icon: 'error',
+      title: 'Failed to delete item. Please try again.',
+      showConfirmButton: false,
+      timer: 1500,
+    });
+  });
+}
+
+const newTotalPrice = data.total;
+
+// Update the product total price in the DOM
+const productTotalPriceElement = document.querySelector(
+  `#product-total-price-${cartId}_${productId}`
+);
+if (productTotalPriceElement) {
+  productTotalPriceElement.textContent = `&#8377;${newTotalPrice.toLocaleString("en-IN")}`;
+}
+
+updateTotalAmount();
+</script>
+ 

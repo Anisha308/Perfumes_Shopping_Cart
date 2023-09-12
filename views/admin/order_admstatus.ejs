@@ -1,0 +1,384 @@
+<%- include('../layouts/adminHeader.ejs') %>
+
+<link
+  href="https://demo.dashboardpack.com/architectui-html-free/main.css"
+  rel="stylesheet"
+/>
+
+<style>
+  .increased-width {
+    width: 300%;
+  }
+  thead {
+    background-color: rgb(230, 177, 177); /* Background color for the header */
+    color: white; /* Text color for the header */
+  }
+
+  .pagination {
+    margin-top: 20px;
+    text-align: center;
+  }
+
+  .pagination a {
+    display: inline-block;
+    padding: 5px 10px;
+    margin: 0 3px;
+    text-decoration: none;
+    background-color: #f2f2f2;
+    color: #333;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+  }
+
+  .pagination a.active,
+  .pagination a:hover {
+    background-color: #333;
+    color: #fff;
+  }
+
+  .pagination a.disabled {
+    pointer-events: none;
+    color: #ccc;
+  }
+
+  /* Styling for different order statuses */
+  .status-pending {
+    font-size: 14px;
+    color: orange;
+  }
+
+  .status-completed {
+    font-size: 14px;
+    color: green;
+  }
+
+  .status-in-progress {
+    font-size: 14px;
+    color: red;
+  }
+
+  /* Adjust SL.NO column width */
+  .slno-column {
+    width: 30px; /* Set the desired width */
+  }
+  .app-main__outer {
+    max-width: 1500px;
+    margin: 0 auto;
+  }
+
+  .table-container {
+    max-width: 100%;
+    overflow-x: auto;
+  }
+
+  .read-more-link {
+    color: blue;
+    cursor: pointer;
+  }
+
+  .truncated-content {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .table-responsive {
+    overflow-x: auto; /* Enable horizontal scrolling for the table */
+  }
+
+  .increased-width {
+    width: auto; /* Reset the width to auto */
+    white-space: nowrap; /* Prevent text from wrapping */
+  }
+</style>
+
+<body>
+  <div class="app-main">
+    <div class="app-main__outer">
+      <div class="app-main__inner">
+        <div class="app-page-title"></div>
+        <div class="row">
+          <div class="col-md-12">
+            <div class="main-card mb-3 card">
+              <div class="card-header">ORDER STATUS</div>
+              <div class="table-responsive">
+                <table
+                  class="align-middle mb-0 table table-borderless table-striped table-hover increased-width"
+                >
+                  <thead>
+                    <tr>
+                      <th class="text-center slno-column">SL.NO</th>
+                      <th>Order ID</th>
+                      <th class="text-center">User</th>
+                      <th class="text-center">Products</th>
+                      <th class="text-center">Payment</th>
+                      <th class="text-center">Total</th>
+                      <th class="text-center">Status</th>
+                      <th class="text-center">Date</th>
+                      <!-- <th class="text-center">Return Reason</th> -->
+                      <th class="text-center">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <% for (let i = 0; i < order_data.length; i++) { %>
+                    <tr>
+                      <td class="text-center text-muted"><%= i + 1 %></td>
+                      <td><%= order_data[i]._id %></td>
+                      <td class="text-center">
+                        <% const address = order_data[i].address; %>
+                        <div
+                          class="read-more-content"
+                          data-content="<%= address.name %>,<br><%= address.address %>,<br><%= address.district %>,<br><%= address.state %>,<br><%= address.country %>,<br><%= address.pincode %>"
+                        >
+                          <% if (address) { %> <% if (address.length > 50) { %>
+                          <span class="truncated-content">
+                            <%= address.substr(0, 50) %>...
+                            <a href="#" class="read-more-link">Read More</a>
+                          </span>
+                          <% } else { %> <%= address.name %>,<br /><%=
+                          address.address %>,<br /><%= address.district %>,<br /><%=
+                          address.state %>,<br /><%= address.country %>,<br /><%=
+                          address.pincode %> <% } %> <% } %>
+                        </div>
+                      </td>
+
+                      <td class="text-center">
+                        <% for (let j = 0; j < order_data[i].items.length; j++)
+                        { %> <% const productName =
+                        order_data[i].items[j].product?.name; %> <% const
+                        quantity = order_data[i].items[j].quantity; %>
+                        <div
+                          class="read-more-content"
+                          data-content="<%= productName %> x <%= quantity %>"
+                        >
+                          <% if (productName) { %> <% if (productName.length >
+                          7) { %>
+                          <span class="truncated-content">
+                            <%= productName.substr(0, 7) %>...
+                            <a href="#" class="read-more-link">Read More</a>
+                          </span>
+                          <% } else { %> <%= productName %> x <%= quantity %> <%
+                          } %> <% } %>
+                        </div>
+                        <% } %>
+                      </td>
+
+                      <td class="text-center">
+                        <%= order_data[i].payment_method %>
+                      </td>
+                      <td class="text-center"><%= order_data[i].total %></td>
+                      <td>
+                        <select
+                          class="status-changing"
+                          data-order-id="<%= order_data[i]._id %>"
+                          name="status"
+                        >
+                          <option value="Pending" <% if (order_data[i].status
+                          === 'Pending') { %>selected<% } %>>Pending <option
+                          value="Shipped" <% if (order_data[i].status ===
+                          'Shipped') { %>selected<% } %>>Shipped <option
+                          value="Delivered" <% if (order_data[i].status ===
+                          'Delivered') { %>selected<% } %>>Delivered <option
+                          value="Returned" <% if (order_data[i].status ===
+                          'Returned') { %>selected<% } %>>Returned <option
+                          value="Cancelled" <% if (order_data[i].status ===
+                          'Cancelled') { %>selected<% } %>>Cancelled <option
+                          value="Cancelled" <% if (order_data[i].status ===
+                          'Refunded') { %>selected<% } %>>Refunded
+                        </select>
+                      </td>
+                      <td class="text-center">
+                        <%= new
+                        Date(order_data[i].createdAt).toLocaleDateString('en-US',
+                        { weekday: 'short', year: 'numeric', month: 'short',
+                        day: 'numeric' }) %>
+                      </td>
+                    
+                      <td class="text-center">
+                        <% if (order_data[i].status === "Delivered") { %> <%
+                        const returnExpiryDate = new
+                        Date(order_data[i].returnExpiryDate); %> <% if (new
+                        Date() <= returnExpiryDate) { %>
+                        <button
+                          class="return-button"
+                          data-order-id="<%= order_data[i]._id %>"
+                        >
+                          Return Order
+                        </button>
+                        <% } %> <% } else if (order_data[i].status ===
+                        "Cancelled" && order_data[i].payment_method ===
+                        "razorpay") { %>
+                        <button
+                          class="refund-button"
+                          data-order-id="<%= order_data[i]._id %>"
+                        >
+                          Refund Order
+                        </button>
+                        <% } else if (order_data[i].status === "Returned" ) { %>
+                        Reason:<%= (order_data[i].reason) %><br />
+
+                        <button
+                          class="refund-button"
+                          data-order-id="<%= order_data[i]._id %>"
+                        >
+                          Refund Order
+                        </button>
+                        <% } else { %>
+                        <h6><%= order_data[i].status %></h6>
+                        <% } %>
+                      </td>
+
+                    </tr>
+                    <% } %>
+                  </tbody>
+                  <div class="pagination">
+                    <% if (hasPrevPage) { %>
+                    <a href="?page=<%= prevPage %>">&laquo; Previous</a>
+                    <% } %> <% for (let i = 1; i <= totalPages; i++) { %> <a
+                    href="?page=<%= i %>" <% if (currentPage === i) {
+                    %>class="active"<% } %>><%= i %> <% } %> <% if (hasNextPage)
+                    { %>
+                    <a href="?page=<%= nextPage %>">Next &raquo;</a>
+                    <% } %>
+                  </div>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="http://maps.google.com/maps/api/js?sensor=true"></script>
+  <script src="https://demo.dashboardpack.com/architectui-html-free/assets/scripts/main.js"></script>
+  <script>
+    
+          $("table").on("change", ".status-changing", function () {
+            const orderId = $(this).data("order-id");
+            const newStatus = $(this).val();
+            const updateSelect = $(this);
+
+            $.ajax({
+              type: "POST",
+              url: `/orderUpdate/${orderId}`,
+              data: { status: newStatus },
+              success: function (data) {
+                if (data.success) {
+                 Toastify({
+    			  text: `Status updated successfully`,
+    			  duration: 3000,
+    			  className: "info",
+    			  gravity: "center",
+    			  position: "center",
+    			  style: {
+    				background: "linear-gradient(109.6deg, rgba(0, 0, 0, 0.93) 11.2%, rgb(63, 61, 61) 78.9%)",
+    			  }
+    			}).showToast();
+                } else {
+                 Toastify({
+    			  text: `Failed to change the status`,
+    			  duration: 3000,
+    			  className: "info",
+    			  gravity: "center",
+    			  position: "center",
+    			  style: {
+    				background: "linear-gradient(109.6deg, rgba(0, 0, 0, 0.93) 11.2%, rgb(63, 61, 61) 78.9%)",
+    			  }
+    			}).showToast();
+                }
+              },
+              error: function (xhr, status, error) {
+                console.error(error);
+    Toastify({
+    			  text: `An Error occurred while changing the status`,
+    			  duration: 3000,
+    			  className: "info",
+    			  gravity: "center",
+    			  position: "center",
+    			  style: {
+    				background: "linear-gradient(109.6deg, rgba(0, 0, 0, 0.93) 11.2%, rgb(63, 61, 61) 78.9%)",
+    			  }
+    			}).showToast();          },
+            });
+          });
+
+         function displayReturnReason(returnReason) {
+          // Display the return reason in a suitable format
+          return "<p><strong>Return Reason:</strong> " + reason + "</p>";
+        }
+
+        // Display return expiry date on admin side
+        function calculateReturnExpiry(orderDate) {
+          const returnDays = 14; // Adjust as needed
+          const orderDateObj = new Date(order_data[i].createdAt);
+    const returnExpiryDateObj = new Date(orderDateObj);
+    returnExpiryDateObj.setDate(orderDateObj.getDate() + 14); // Adding 14 days
+
+          return "<p><strong>Return Expiry Date:</strong> " + returnExpiryDateObj.toLocaleDateString('en-US', { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' }) + "</p>";
+        }
+
+
+
+
+        <!-- Include SweetAlert2 library -->
+
+
+      $(document).ready(function () {
+        // ... Your other event listeners ...
+
+        $(".refund-button").click(function () {
+          const orderId = $(this).data("order-id");
+
+          Swal.fire({
+            title: "Confirm Refund",
+            text: "Are you sure you want to refund this order?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Yes, refund it",
+            cancelButtonText: "No, keep it",
+          }).then((result) => {
+            if (result.isConfirmed) {
+              // Perform the refund
+              $.ajax({
+                type: "POST",
+                url: `/refundOrder/${orderId}`,
+                success: function (data) {
+                  if (data.success) {
+                    Swal.fire("Refunded!", data.message, "success").then(() => {
+                      // Refresh the page or update the UI as needed
+                      location.reload(); // For example, refresh the page
+                    });
+                  } else {
+                    Swal.fire("Error", data.error, "error");
+                  }
+                },
+                error: function () {
+                  Swal.fire("Error", "An error occurred.", "error");
+                },
+              });
+            }
+          });
+        });
+      });
+
+
+      document.addEventListener("DOMContentLoaded", function () {
+        const readMoreLinks = document.querySelectorAll(".read-more-link");
+
+        readMoreLinks.forEach(function (link) {
+          link.addEventListener("click", function (event) {
+            event.preventDefault();
+            const contentDiv = this.closest(".read-more-content");
+            const fullContent = contentDiv.getAttribute("data-content");
+
+            contentDiv.innerHTML = fullContent;
+          });
+        });
+      });
+  </script>
+
+  <%- include('../layouts/adminFooter.ejs') %>
+</body>

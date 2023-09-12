@@ -1,0 +1,288 @@
+ <%- include('../layouts/userHeader.ejs') %>
+<style>
+  /* Custom styling for carousel controls */
+  .carousel-control-prev-icon,
+  .carousel-control-next-icon {
+    color: #000;
+  }
+
+  /* Custom styling for product name and "Add to Cart" button */
+  .product-name {
+    font-weight: bold;
+    font-size: large;
+  }
+
+ .selected-image {
+  transform: scale(2.2);
+  transition: transform 0.3s ease;
+}
+  .custom-container {
+    border: 1px solid white;
+    padding: 20px;
+  }
+
+  .custom-btn {
+    text-transform: capitalize;
+    background-color: black;
+    color: white;
+    width: 100px;
+    height: 30px;
+    border-radius: 0;
+  }
+
+  .custom-btn:hover {
+    background-color: grey !important;
+    font-size: 10px;
+    color: black !important;
+  }
+
+  .description {
+    font-size: 0.9rem;
+  }
+
+  .description {
+    white-space: pre-line;
+  }
+
+  .description::after {
+    content: attr(data-description);
+    white-space: pre-wrap;
+    display: block;
+  }
+
+  .zoom-image-container {
+    overflow: hidden;
+    position: relative;
+  }
+
+  .zoom-image {
+    transition: transform 0.3s ease;
+    max-width: 100%;
+    display: block;
+  }
+
+  .zoom-circle {
+    position: absolute;
+    border-radius: 50%;
+    pointer-events: none;
+    border: 2px solid #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    transform: scale(1);
+    transition: transform 0.3s ease;
+  }
+
+  .add-padding {
+    padding-top: 180px;
+  }
+</style>
+<body>
+  <div class="container my-5 add-padding custom-container">
+    <div class="row">
+      <div class="col-md-5">
+        <div class="main-img">
+          <div id="productImageCarousel" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-inner">
+              <% product?.images.forEach((image, index) => { %>
+              <div class="carousel-item <%= index === 0 ? 'active' : '' %>">
+                <div class="zoom-image-container">
+                  <img style="width: 500px; height: 500px;" class="img-fluid zoom-image img-fluid <%= index === 0 ? 'first-image' : '' %>"
+                    src="/uploads/<%= image %>"
+                    alt="Product Image <%= index + 1 %>" />
+                </div>
+              </div>
+              <% }); %>
+            </div>
+            <a class="carousel-control-prev" href="#productImageCarousel" role="button" data-bs-slide="prev">
+              <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Previous</span>
+            </a>
+            <a class="carousel-control-next" href="#productImageCarousel" role="button" data-bs-slide="next">
+              <span class="carousel-control-next-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Next</span>
+            </a>
+          </div>
+        </div>
+        <div class="previews row my-3">
+          <% product?.images.forEach((image, index) => { %>
+          <div class="col-md-3">
+            <img class="w-100 preview-image" src="/uploads/<%= image %>" alt="Product Preview <%= index + 1 %>" data-index="<%= index %>"/>
+          </div>
+          <% }); %>
+        </div>
+      </div>
+      <div class="col-md-7">
+        <div class="main-description px-2">
+          <div class="product-title text-bold my-9 product-name"><%= product?.name %></div>
+        <div class="product-info">
+  <p><del>&#8377; <%= products?.price %></del> &#8377; <%= products?.offerprice %></p>
+
+    <% if (product.stock < 15) { %>
+        <p style="color: red;">Only <%= product?.stock %> left!!!</p>
+    <% } else { %>
+        <p style="color: green;">In stock!!</p>
+    <% } %>
+</div>
+        </div>
+        <div class="product-details my-4">
+          <p class="details-title text-color mb-1">Product Details</p>
+          <p class="description" data-description="<%- product?.description %>"></p>
+        </div>
+        <a href="#">
+          <span class="bi bi-check2-circle"></span>
+        </a>
+
+       <% if (products.category) { %>
+          <p>Category: <%= products.category.name %></p>
+        <% } else { %>
+          <p>Category: Not available</p>
+        <% } %>
+        <div class="buttons d-flex flex-row mt-5 gap-3">
+               <button class="btn btn-dark custom-button" onclick="addToCart('<%= products.id %>')">
+    Add to Cart
+  </button>
+            </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+     var productCarousel = new bootstrap.Carousel(document.getElementById('productImageCarousel'), {
+    interval: false,
+    wrap: true // Add this line
+  });
+
+    function addToCart(productId) {
+
+      fetch(`/cart/${productId}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          console.log("Response data:", data);
+
+          if (data.status === "success") {
+            	Toastify({
+			  text: `Added to Cart`,
+			  duration: 3000,
+			  className: "info",
+			  gravity: "center",
+			  position: "center",
+			  style: {
+				background: "linear-gradient(109.6deg, rgba(0, 0, 0, 0.93) 11.2%, rgb(63, 61, 61) 78.9%)",
+			  }
+			}).showToast();
+      } else if (data.status === "login_required") {
+        	Toastify({
+			  text: `Please login to add to the cart`,
+			  duration: 3000,
+			  className: "info",
+			  gravity: "center",
+			  position: "center",
+			  style: {
+				background: "linear-gradient(109.6deg, rgba(0, 0, 0, 0.93) 11.2%, rgb(63, 61, 61) 78.9%)",
+			  }
+			}).showToast();
+		} else {
+            	Toastify({
+			  text: `failed`,
+			  duration: 3000,
+			  className: "info",
+			  gravity: "center",
+			  position: "center",
+			  style: {
+				background: "linear-gradient(109.6deg, rgba(0, 0, 0, 0.93) 11.2%, rgb(63, 61, 61) 78.9%)",
+			  }
+			}).showToast();
+          }
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+
+
+		
+    }
+	
+  // Function to handle the zoom effect
+  function handleZoom(event) {
+      const imageContainer = event.currentTarget;
+      const image = imageContainer.querySelector('.zoom-image');
+      const zoomCircle = imageContainer.querySelector('.zoom-circle');
+
+      // Get the position of the mouse pointer relative to the image container
+      const rect = imageContainer.getBoundingClientRect();
+      const offsetX = event.clientX - rect.left;
+      const offsetY = event.clientY - rect.top;
+
+      // Calculate the position of the zoom circle and set its size
+      const circleSize = 100; // Adjust this value to change the size of the zoom circle
+      const circleX = offsetX - circleSize / 2;
+      const circleY = offsetY - circleSize / 2;
+
+      // Apply the zoom effect by changing the scale of the image and zoom circle
+      image.style.transformOrigin = `${offsetX}px ${offsetY}px`;
+      image.style.transform = 'scale(2.2)';
+
+      zoomCircle.style.width = circleSize + 'px';
+      zoomCircle.style.height = circleSize + 'px';
+      zoomCircle.style.left = circleX + 'px';
+      zoomCircle.style.top = circleY + 'px';
+      zoomCircle.style.transform = 'scale(2)'; // Adjust this value to change the zoom circle's zoom level
+  }
+
+  // Function to reset the zoom effect
+  function resetZoom(event) {
+      const imageContainer = event.currentTarget;
+      const image = imageContainer.querySelector('.zoom-image');
+      const zoomCircle = imageContainer.querySelector('.zoom-circle');
+
+        if (image) {
+      image.style.transform = 'scale(1)';
+    }
+      zoomCircle.style.transform = 'scale(1)';
+  }
+
+  // Attach event listeners to the image container
+  const imageContainers = document.querySelectorAll('.zoom-image-container');
+  imageContainers.forEach(container => {
+      container.
+      ventListener('mousemove', handleZoom);
+      container.addEventListener('mouseleave', resetZoom);
+  });
+
+
+function handleImageSelection(event) {
+    const clickedImage = event.currentTarget;
+    const index = clickedImage.getAttribute('data-index');
+
+     // Remove 'active' class from all carousel items
+    const carouselItems = document.querySelectorAll('.carousel-item');
+    carouselItems.forEach(item => {
+      item.classList.remove('active');
+    });
+
+// Add 'active' class to the selected carousel item
+    carouselItems[index].classList.add('active');
+
+     // Update the main product image to show the selected image
+    const mainImages = document.querySelectorAll('.zoom-image');
+    mainImages.forEach((mainImage, i) => {
+      if (i === parseInt(index)) {
+        mainImage.style.transform = 'scale(2.2)';
+      } else {
+        mainImage.style.transform = 'scale(1)';
+      }
+    });
+  }
+  
+  // Attach click event listeners to the preview images
+  const previewImages = document.querySelectorAll('.preview-image');
+  previewImages.forEach(preview => {
+    preview.addEventListener('click', handleImageSelection);
+  });
+</script>
+ <%- include('../layouts/userFooter.ejs') %>

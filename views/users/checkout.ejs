@@ -1,0 +1,637 @@
+<%- include('../layouts/userHeader.ejs') %>
+<style>
+  .add-padding {
+    padding-top: 180px;
+  }
+  .shop_inner_inf {
+    display: flex;
+    justify-content: space-between;
+    align-items: stretch;
+  }
+
+  /* Left section */
+  .privacy.about {
+    flex: 1;
+    padding: 20px;
+  }
+
+  /* Right section */
+  .checkout-left {
+    flex: 1;
+    padding: 20px;
+    border: 1px solid #ccc;
+    background-color: #f5f5f5;
+  }
+
+ 
+
+  /* Style for coupon cards */
+  .coupon-card {
+    border: 1px solid #ccc;
+    padding: 15px;
+    margin: 10px 0;
+    background-color: #fff;
+  }
+
+  /* Style for coupon buttons */
+  #cpnBtn {
+    cursor: pointer;
+    color: #007bff;
+    text-decoration: underline;
+    margin-left: 10px;
+  }
+</style>
+<div class="container add-padding">
+  <div class="row">
+    <div class="col-md-6 mb-4">
+      <div class="mt-5">
+        <h4 class="mb-3">Saved Address</h4>
+        <div class="container">
+          <div class="row">
+            <% addressItem.forEach((deliveryItem) => { %> 
+              <% deliveryItem.deliveryAddress.forEach((address) => { %>
+                <div class="col-md-6 mb-4">
+                  <div class="card">
+                    <div class="card-body">
+                      <div class="form-check">
+                        <input
+                          class="form-check-input"
+                          type="radio"
+                          name="addressRadio"
+                          id="<%= address._id %>"
+                          value="<%= address._id %>"
+                        />
+                        <label class="form-check-label" for="<%= address._id %>">
+                          <%= address.name %>
+                        </label>
+                      </div>
+                      <address>
+                        <%= address.address %>, <%= address.district %>, <%= address.state %> - <%= address.pincode %>
+                      </address>
+                      <span class="text-muted">
+                        <%= address.mobile ? address.mobile : "" %> <%= address.email ? "(" + address.email + ")" : "" %>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              <% }) %> 
+            <% }) %>
+          </div>
+        </div>
+      </div>
+      <div class="p-3 card-child mt-4 py-4">
+        <div class="d-flex flex-row align-items-center">
+          <span class="circle-3">
+            <i class="fa fa-plus"></i>
+          </span>
+          <div class="container">
+            <button
+              class="btn btn-dark"
+              data-toggle="modal"
+              data-target="#exampleModal"
+            >
+              Add Address
+            </button>
+            <!-- The Modal -->
+            <form action="/addAddress" method="POST">
+              <div
+                class="modal fade"
+                id="exampleModal"
+                tabindex="-1"
+                role="dialog"
+                aria-labelledby="exampleModalLabel"
+                aria-hidden="true"
+              >
+                <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h4 class="mb-3">Billing address</h4>
+                    </div>
+                    <div class="modal-body">
+                      <form class="needs-validation" novalidate>
+                        <div class="row">
+                          <div class="col-md-6 mb-3">
+                            <label for="name">Name</label>
+                            <input
+                              type="text"
+                              class="form-control"
+                              id="name"
+                              name="name"
+                              placeholder=""
+                              value=""
+                              required
+                            />
+                            <div class="invalid-feedback">
+                              Please provide a valid name.
+                            </div>
+                          </div>
+                          <div class="col-md-6 mb-3">
+                            <label for="mobile">Mobile</label>
+                            <input
+                              type="text"
+                              class="form-control"
+                              id="mobile"
+                              name="mobile"
+                              placeholder=""
+                              value=""
+                              required
+                            />
+                            <div class="invalid-feedback">
+                              Please provide a valid mobile number.
+                            </div>
+                          </div>
+                        </div>
+                        <div class="mb-3">
+                          <label for="email"
+                            >Email
+                            <span class="text-muted">(Optional)</span></label
+                          >
+                          <input
+                            type="email"
+                            class="form-control"
+                            name="email"
+                            placeholder="you@example.com"
+                          />
+                          <div class="invalid-feedback">
+                            Please enter a valid email address for shipping
+                            updates.
+                          </div>
+                        </div>
+                        <div class="mb-3">
+                          <label for="address">Address</label>
+                          <input
+                            type="text"
+                            class="form-control"
+                            name="address"
+                            placeholder="1234 Main St"
+                            required
+                          />
+                          <div class="invalid-feedback">
+                            Please enter your shipping address.
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="mb-3 col">
+                            <label for="pincode"
+                              >Pincode<span class="text-muted"></span
+                            ></label>
+                            <input
+                              type="text"
+                              class="form-control"
+                              name="pincode"
+                              placeholder="Apartment or suite"
+                            />
+                          </div>
+                          <div class="mb-3 col">
+                            <label for="district"
+                              >District<span class="text-muted"></span
+                            ></label>
+                            <input
+                              type="text"
+                              class="form-control"
+                              name="district"
+                              placeholder="Apartment or suite"
+                            />
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col mb-3">
+                            <label for="state">State</label>
+                            <select
+                              class="custom-select d-block w-100"
+                              name="state"
+                              required
+                            >
+                              <option value="">Choose...</option>
+                              <option>Kerala</option>
+                            </select>
+                          </div>
+                          <div class="col mb-3">
+                            <label for="country">Country</label>
+                            <select
+                              class="custom-select d-block w-100"
+                              name="country"
+                              required
+                            >
+                              <option value="">Choose...</option>
+                              <option>India</option>
+                            </select>
+                          </div>
+                        </div>
+                      </form>
+                    </div>
+                    <div class="modal-footer">
+                      <button
+                        type="button"
+                        class="btn btn-secondary"
+                        data-dismiss="modal"
+                      >
+                        Close
+                      </button>
+                      <button
+                        type="submit"
+                        class="btn btn-primary"
+                        id="addressOrderButton"
+                      >
+                        Save changes
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6 mb-4 mt-5">
+      <h4 class="d-flex justify-content-between align-items-center mb-3">
+        <span class="text-muted">Your cart</span>
+      </h4>
+      <ul class="list-group mb-3">
+        <li class="list-group-item d-flex justify-content-between lh-condensed">
+          <div>
+            <h6 class="my-0">Price</h6>
+            <small class="text-muted">Brief description</small>
+          </div>
+          <span class="text-muted"
+            ><%= totalPrice.toLocaleString(undefined, { style: 'currency',
+            currency: 'INR' }) %></span
+          >
+        </li>
+
+
+<div class="shop_inner_inf">
+			<div class="privacy about">
+				<h3 style="text-transform: uppercase; font-weight: 500;">Chec<span>kout</span></h3>
+
+				<div class="box">
+					<a class="button couponbtn" data-toggle="modal" data-target="#popup1">Available Coupons</a>
+				</div>
+				
+				<div id="popup1" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered couponmode modal-sm" role="document">
+        <div class="modal-content" style="background-color: #f4f7fa;">
+            <h4 style="font-weight: 400; text-transform: uppercase; padding: 15px; color: #333333;">Available Coupons</h4>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="margin-right: 5%; color: #999999;">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            <% coupon.forEach(function(coupon) { %>
+                <% if (currentDate <= coupon.expiryDate) { %>
+                    <div class="containers">
+                        <div class="coupon-card" style="background-color: #ffffff; padding: 15px; margin-bottom: 10px;">
+                            <h3 style="font-size: 20px; color: #333333;">
+                                <span><%= coupon.offer %></span>% flat Off<br>
+                            </h3>
+                            <div class="coupon-row" style="display: flex; justify-content: space-between; align-items: center;">
+                                <span id="cpnCode" style="font-size: 18px;"><%= coupon.coupon %></span>
+                            </div>
+                            <p style="color: #333333;">Valid Till: <%= coupon.expiryDate %></p>
+                            <div class="circle1"></div>
+                            <div class="circle2"></div>
+                        </div>
+                    </div>
+                <% } %>
+            <% }) %>
+        </div>
+    </div>
+</div>
+
+        <div class="checkout-left">
+					
+    <div class="col-md-12 checkout-left-basket"> <!-- Increased width to col-md-6 -->
+						<h5>have Coupon?</h5>
+						<div class="redeem">
+							
+							  <div class="row rowcode">
+								<div class="col-md-8 procode">
+								  <div class="input-group">
+<input type="text" class="form-control" id="coupon" name="coupon" placeholder="Promo code">
+								  </div>
+								</div>
+								<div class="col-md-4 redeecode">
+  <button type="button" class="btn btn-danger btn-block redeem-btn" id="couponredeem">Redeem</button>
+								</div>
+							  </div>
+							
+<button type="button" class="btn btn-danger " onclick="cancelCoupon()" id="cancelCouponBtn">Cancel Coupon</button>
+
+						  </div>
+              <br>
+						<ul class="pprice">
+                            <% products.forEach(function(product) { %>
+<li class="pprice" style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 15px;">
+                    <div><%= product.productId.name %><i>-(<%=product.quantity%>):-</i></div>
+                    <% let total=product.quantity * product.productId.offerprice %>
+                    <div><%= total %></div>
+                </li>                             <% }) %>  
+
+ <li class="pprice" style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 15px;">
+                <div class="col-md-12">Discount - <span  id="discou"><%=upcart.discount.toFixed(2)%></span> </div>
+            </li>
+							
+
+ <li class="pprice" style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 15px;">
+                <div class="col-md-12">Total -<span id="total" ><%= upcart.total-upcart.discount %></span></div>
+            </li>						</ul>
+						
+					</div>
+
+
+
+        <h6>Payment Methods</h6>
+        <form action="/placeOrder/<%= userId %>" method="POST">
+          <input
+            type="hidden"
+            name="selectedAddressId"
+            id="selectedAddressId"
+            value=""
+          />
+
+          <input
+            type="hidden"
+            name="selectedPaymentMethod"
+            id="selectedPaymentMethod"
+            value=""
+          />
+
+          <div class="form-check mb-3">
+            <input
+              class="form-check-input"
+              type="radio"
+              name="paymentMethodRadio"
+              id="rzp-button1"
+              value="razorpay"
+            />
+            <label class="form-check-label" for="rzp-button1">
+              Razorpay
+            </label>
+          </div>
+ <div class="form-check mb-3">
+            <input
+              class="form-check-input"
+              type="radio"
+              name="paymentMethodRadio"
+              id="cashOnDeliveryRadio"
+              value="cash on delivery"
+            />
+            <label class="form-check-label" for="cashOnDeliveryRadio">
+              Cash on Delivery
+            </label>
+          </div>
+         <button
+  type="submit"
+  class="btn btn-dark"
+  id="placeOrderButton"
+  disabled
+>
+  Place Order
+</button>
+
+        </form>
+      </ul>
+    </div>
+  </div>
+</div>
+<%- include('../layouts/userFooter.ejs') %>
+<script src="https://cdn.jsdelivr.net/npm/axios@1.4.0/dist/axios.min.js"></script>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+<script>
+  const userId = "<%= userId %>";
+
+  document.getElementById("addressOrderButton").addEventListener("click", () => {
+    $("#exampleModal").modal("show");
+  });
+
+  document.querySelectorAll('input[name="addressRadio"]').forEach((radio) => {
+    radio.addEventListener("click", () => {
+      const selectedAddressId = radio.value;
+      if (selectedAddressId) {
+        document.getElementById("selectedAddressId").value = selectedAddressId;
+        enablePlaceOrderButton();
+      }
+    });
+  });
+
+  document.querySelectorAll('input[name="addressRadio"]').forEach((radio) => {
+  radio.addEventListener("click", () => {
+    const selectedAddressId = radio.value;
+    if (selectedAddressId) {
+      document.getElementById("selectedAddressId").value = selectedAddressId;
+      enablePlaceOrderButton();
+    }
+  });
+});
+
+document.querySelectorAll('input[name="paymentMethodRadio"]').forEach((radio) => {
+  radio.addEventListener("click", () => {
+    const selectedPaymentMethod = radio.value;
+    if (selectedPaymentMethod) {
+      document.getElementById("selectedPaymentMethod").value = selectedPaymentMethod;
+      enablePlaceOrderButton();
+    }
+  });
+});
+
+function enablePlaceOrderButton() {
+  const selectedAddressId = document.querySelector('input[name="addressRadio"]:checked');
+  const selectedPaymentMethod = document.querySelector('input[name="paymentMethodRadio"]:checked');
+  const placeOrderButton = document.getElementById("placeOrderButton");
+
+  if (selectedAddressId && selectedPaymentMethod) {
+    placeOrderButton.removeAttribute("disabled");
+  } else {
+    placeOrderButton.setAttribute("disabled", "disabled");
+  }
+}
+
+ 
+document.querySelectorAll('input[name="paymentMethodRadio"]').forEach((radio) => {
+  radio.addEventListener("click", () => {
+    const selectedPaymentMethod = radio.value;
+    if (selectedPaymentMethod) {
+      document.getElementById("selectedPaymentMethod").value = selectedPaymentMethod;
+      enablePlaceOrderButton();
+    }
+  });
+});
+
+
+
+document.getElementById("placeOrderButton").addEventListener("click", async () => {
+    const selectedPaymentMethod = document.querySelector('input[name="paymentMethodRadio"]:checked').value;
+    
+    if (selectedPaymentMethod === "razorpay") {
+      try {
+        const response = await axios.post('/createOrder', {
+          selectedPaymentMethod: selectedPaymentMethod
+        });
+           console.log(response.data,"response dataaa");
+        const razorpayOrder = response.data.payment;
+        const discountAmount = parseFloat("<%= upcart.discount.toFixed(2) %>");
+      const totalAmount = parseFloat("<%= upcart.total.toFixed(2) %>");
+      
+      // Calculate the total amount to be paid, including the discount
+      const amountToPay = totalAmount - discountAmount;
+        console.log(amountToPay,"jajajajajajaj");
+        const rzpOptions = {
+          key: "rzp_test_cfEcly6fwWA0kV",
+          order_id: razorpayOrder.id,
+        amount: Math.round(amountToPay * 100), // Round and convert to paise
+          currency: "INR",
+          name: "Parfum",
+          description: "Order Payment",
+          handler: function (response) {
+           window.location.href="/success";
+            }
+            // You can perform further actions here, such as confirming the order.
+        };
+        const rzp = new Razorpay(rzpOptions);
+        rzp.open();
+
+      } catch (error) {
+        console.error(error);
+        // Handle the error
+      }
+    } else {
+      // Handle other payment methods
+    }
+  });
+
+$(document).ready(function () {
+  $('#couponredeem').on('click', async function (event) {
+    event.preventDefault(); // Prevent form submission
+    const coupon = $('#coupon').val();
+
+    if (!coupon) {
+      Toastify({
+        text: `Enter a coupon code`,
+        duration: 3000,
+        className: "info",
+        gravity: "bottom",
+        position: "center",
+        style: {
+          background: "linear-gradient(109.6deg, rgba(0, 0, 0, 0.93) 11.2%, rgb(63, 61, 61) 78.9%)",
+        }
+      }).showToast();
+      return;
+    }
+
+    $.ajax({
+      url: "/coupon",
+      method: "POST",
+      data: { coupon: coupon },
+      success: function(response) {
+        if (response.status === 'success') {
+          if (response && response.discount !== undefined) {
+            var discountAsNumber = parseFloat(response.discount);
+            var formattedDiscount = parseFloat(discountAsNumber.toFixed(2));
+            $('#discou').text(formattedDiscount);
+
+    var totalAsNumber = parseFloat(response.stotal);
+    var formattedTotal = parseFloat(totalAsNumber.toFixed(2));
+    $('#total').text(formattedTotal);
+
+            
+            // Update other relevant elements if needed
+            console.log(response);
+
+            Toastify({
+              text: `${response.message}`,
+              duration: 3000,
+              className: "info",
+              gravity: "bottom",
+              position: "center",
+              style: {
+                background: "linear-gradient(109.6deg, rgba(0, 0, 0, 0.93) 11.2%, rgb(63, 61, 61) 78.9%)",
+              }
+            }).showToast();
+          }
+        } else if (response.status === 'error') {
+          if (response.message === 'Coupon already used') {
+            // Handle the case where the coupon has already been used
+            Toastify({
+              text: 'Coupon has already been used',
+              duration: 3000,
+              className: "error",
+              gravity: "bottom",
+              position: "center",
+              style: {
+                background: "linear-gradient(109.6deg, rgba(0, 0, 0, 0.93) 11.2%, rgb(63, 61, 61) 78.9%)",
+              }
+            }).showToast();
+          } else {
+            // Handle other error cases
+            console.error('Error:', response);
+          }
+        }
+      },
+      error: function(error) {
+        console.error('Error:', error);
+        // Handle any other errors
+      }
+    });
+  });
+});
+
+
+
+	
+
+//   // Add this function to your existing JavaScript code
+function cancelCoupon() {
+  console.log("Cancel Coupon button clicked!");
+
+  event.preventDefault();
+  const couponCode = $('#coupon').val();
+
+  if (!couponCode) {
+    // Handle the case where there's no coupon code entered.
+    return;
+  }
+
+  $.ajax({
+    url: "/cancel_coupon",
+    method: "POST",
+    data: { coupon: couponCode },
+    success: function(response) {
+  if (response && response.status === 'success') {
+        // Handle success, update displayed discount and total
+        $('#discou').text("0.00");
+        $('#total').text("<%= upcart.total.toFixed(2) %>");
+
+        Toastify({
+          text: `${response.data.message}`,
+          duration: 3000,
+          className: "info",
+          gravity: "bottom",
+          position: "center",
+          style: {
+            background: "linear-gradient(109.6deg, rgba(0, 0, 0, 0.93) 11.2%, rgb(63, 61, 61) 78.9%)",
+          },
+        }).showToast();
+      } else {
+        // Handle the case where the coupon cancellation was not successful
+        Toastify({
+          text: `Failed to cancel coupon: ${response.data.message}`,
+          duration: 3000,
+          className: "error",
+          gravity: "bottom",
+          position: "center",
+          style: {
+            background: "linear-gradient(109.6deg, rgba(0, 0, 0, 0.93) 11.2%, rgb(63, 61, 61) 78.9%)",
+          },
+        }).showToast();
+      }
+      
+    },
+    error: function(error) {
+      console.error('Error:', error);
+      // Handle any other errors
+    }
+  });
+}
+
+ 
+</script>

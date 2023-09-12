@@ -1,0 +1,176 @@
+<style>
+  * {
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+    font-family: "Open Sans", sans-serif; /* Use the 'Open Sans' font */
+  }
+
+  body {
+    font-size: 5px; /* Set the default font size for the body */
+    line-height: 1;
+  }
+
+  .right-corner-container {
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  /* Adjust font sizes for different elements */
+  .product-title {
+    font-size: 1rem;
+  }
+
+  .product-price {
+    font-size: 1rem;
+  }
+  .black-icon {
+    color: black;
+  }
+  .product-detail h2 {
+    font-size: 1rem;
+  }
+
+  .product-detail p {
+    font-size: 0rem;
+  }
+</style>
+
+<%- include('../layouts/adminHeader.ejs') %>
+
+<link
+  rel="stylesheet"
+  href="https://fonts.googleapis.com/icon?family=Material+Icons"
+/>
+
+<!-- Add Product button on the right corner -->
+
+<div class="table-responsive p-5 shadow mb-5 bg-white rounded">
+  <div class="right-corner-container">
+    <a href="/addProduct">
+      <button class="btn btn-dark">Add Product</button>
+    </a>
+  </div>
+  <br />
+  <table class="table table-hover">
+    <thead class="table-danger">
+      <tr class="text-center">
+        <th>Image</th>
+        <th>Name</th>
+        <th>Description</th>
+        <th>Category</th>
+        <th>Price</th>
+        <th>Offer Price</th>
+        <th>Stock</th>
+        <th>Edit</th>
+        <!-- <th>Delete</th> -->
+        <th>List/Unlist</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% product.forEach((item) => { %>
+      <tr>
+        <td class="text-center">
+          <div class="image-container">
+            <img
+              src="/uploads/<%= item.images[0] %>"
+              class="circular-image"
+              alt="Item"
+            />
+          </div>
+        </td>
+
+        <td class="text-center">
+          <div class="info">
+            <p class="mb-0">
+              <%= item.name.slice(0, 20) %>
+              <span
+                class="read-more"
+                onclick="toggleProductName('<%= item._id %>')"
+                >...</span
+              >
+            </p>
+          </div>
+        </td>
+
+        <td class="text-center">
+          <div class="info">
+            <p class="mb-0" style="white-space: pre-line">
+              <%= item.description.slice(0, 30) %>
+              <span
+                class="read-more"
+                onclick="toggleDescription('<%= item._id %>')"
+                >...</span
+              >
+            </p>
+          </div>
+        </td>
+
+        <td class="text-center">
+          <div class="info">
+            <p class="mb-0"><%= getCategoryName(item.category) %></p>
+          </div>
+        </td>
+
+        <td class="text-center">
+          <div class="info">
+            <p class="mb-0"><%= item.price %></p>
+          </div>
+        </td>
+        <td class="text-center">
+          <div class="info">
+            <p class="mb-0"><%= item.offerprice %></p>
+          </div>
+        </td>
+        <td class="text-center">
+          <div class="info">
+            <p class="mb-0"><%= item.stock %></p>
+          </div>
+        </td>
+        <td class="text-center">
+          <a href="/editProductList?id=<%= item._id %>">
+            <button type="button" class="btn btn-success">Edit</button>
+          </a>
+        </td>
+        <td class="text-center">
+          <% if (item.is_listed) { %>
+
+          <a href="/changeProductstatus?id=<%= item._id %>">
+            <i class="fa fa-eye black-icon" aria-hidden="true"></i>
+          </a>
+
+          <% } else { %>
+
+          <a href="/changeProductstatus?id=<%= item._id %>">
+            <img
+              src="/images/eyeclose.png"
+              alt="Eye Icon"
+              class="eye-icon"
+              style="font: 25px; width: 25px"
+            />
+          </a>
+
+          <% } %>
+        </td>
+      </tr>
+      <% }); %>
+    </tbody>
+  </table>
+</div>
+
+<script>
+  function toggleDescription(productId) {
+    const description = document.getElementById(`description-${productId}`);
+    const readMore = document.getElementById(`read-more-${productId}`);
+
+    if (description.classList.contains("expanded")) {
+      description.classList.remove("expanded");
+      readMore.textContent = "...Read More";
+    } else {
+      description.classList.add("expanded");
+      readMore.textContent = "...Read Less";
+    }
+  }
+</script>
+
+<%- include('../layouts/adminFooter.ejs') %>

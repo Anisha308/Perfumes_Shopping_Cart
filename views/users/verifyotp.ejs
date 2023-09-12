@@ -1,0 +1,99 @@
+<%- include('../layouts/userHeader.ejs') %>
+
+<style>
+  .custom-left-padding {
+    padding-left: 90px; /* Adjust the value as needed */
+  
+  }
+</style>
+
+	<!-- Start Banner Area -->
+	<section class="banner-area organic-breadcrumb">
+		<div class="container">
+			<div class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end">
+				<div class="col-first">
+					<h1>Reset Password</h1>
+					<nav class="d-flex align-items-center">
+						<a href="/home">Back to Home<span class="lnr lnr-arrow-left"></span></a>
+						
+					</nav>
+				</div>
+			</div>
+		</div>
+	</section>
+	<!-- End Banner Area -->
+
+	<!--================Login Box Area =================-->
+	<section class="login_box_area section_gap">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-6">
+					<div class="login_box_img">
+						<img class="img-fluid" src="images/banner-img.jpg" alt="">
+						<div class="hover">
+							<!-- <h4>New to our website?</h4> -->
+							<p>Perfumes are much more than just a smell. They have the power to evoke feelings of love, energy, power, happiness, awe, sensuality and peace. </p>
+							<a class="primary-btn" href="/login">Go Back</a>
+						</div>
+					</div>
+				</div>
+				<div class="col-lg-6 custom-left-padding">
+					<div class="login_form_inner">
+						<h3>Otp verify</h3>
+<form class="row login_form" action="/verifyotp" method="POST" id="contactForm" novalidate="novalidate">
+							<div class="col-md-12 form-group">
+								<input type="text" class="form-control" id="name" name="otp" placeholder="Enter Your Otp" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Otp'">
+							</div>
+							
+							<div class="col-md-12 form-group">
+								<button type="submit" value="submit" class="primary-btn">Verify Otp</button>
+								</div>
+						 <!-- <div class="text-center mt-3"> -->
+                       <p id="timer" style="display: none; color: black;">Resend OTP in <span id="countdown">30</span> seconds</p>
+         
+        
+		</form>
+		<!-- </div> -->
+<a href="/resend" id="resendLink" style="display: none;"><button class="btn btn-dark btn-block" 
+              id="resendBtn">Resend OTP</button></a>
+        <%=(typeof message!=='undefined' )?message:""%>
+      </div>
+						
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+	<!--================End Login Box Area =================-->
+
+	<!-- start footer Area -->
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+  <script>
+    // Timer
+    var countdownElement = document.getElementById('countdown');
+    var resendLink = document.getElementById('resendLink');
+    var timer = document.getElementById('timer');
+    var resendBtn = document.getElementById('resendBtn');
+    var countdown = 30; // Set the initial countdown value
+
+    function startCountdown() {
+      timer.style.display = 'block';
+      countdownElement.textContent = countdown;
+
+      var interval = setInterval(function () {
+        countdown--;
+
+        if (countdown === 0) {
+          clearInterval(interval);
+          timer.style.display = 'none';
+          resendLink.style.display = 'inline-block';
+        } else {
+          countdownElement.textContent = countdown;
+        }
+      }, 1000);
+    }
+
+    setTimeout(startCountdown); // Start the countdown after 10 seconds
+  </script>
+<%- include('../layouts/userFooter.ejs') %>

@@ -1,0 +1,72 @@
+<%- include('../layouts/adminHeader.ejs') %>
+<style>
+  .grey-card {
+    background-color: white; /* Grey background color */
+    border: 30px solid white; /* Border */
+    border-radius: 8px; /* Border radius for rounded corners */
+    padding: 20px; /* Padding for the content inside the card */
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1); /* Optional box shadow */
+  }
+</style>
+<!-- Form Start -->
+<div class="container-fluid pt-4 px-4">
+  <div class="row g-4 align-items-center justify-content-center mt-5">
+    <div class="col-sm-12 col-xl-6">
+      <div class="grey-card">
+        <h6 class="mb-4">Edit Coupon</h6>
+        <div>
+          <% if(locals.msg) { %>
+          <div id="msg" class="alert alert-success"><%- locals.msg -%></div>
+          <%}%>
+        </div>
+        <form
+          action="/update_coupon/<%= coupon._id %>"
+          id="update_coupon"
+          name="basic"
+          method="post"
+        >
+          <div class="mb-3">
+            <label for="category" class="form-label">Coupon Code</label>
+            <input
+              type="text"
+              class="form-control"
+              id="category"
+              name="coupon"
+              value="<%= coupon.coupon %>"
+            />
+          </div>
+
+          <div class="mb-3">
+            <label for="category" class="form-label">ExpiryDate</label>
+            <input
+              type="date"
+              class="form-control"
+              id="category"
+              name="expiryDate"
+              value="<%= coupon.expiryDate %>"
+            />
+            <div class="mb-3">
+              <label for="category" class="form-label">Offer</label>
+              <input
+                type="number"
+                class="form-control"
+                id="coupon"
+                name="offer"
+                value="<%= coupon.offer %>"
+              />
+            </div>
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+          </div>
+
+          <script>
+            setTimeout(() => {
+              document.getElementById("msg").style.display = "none";
+            }, 3000);
+          </script>
+
+          <%- include('../layouts/adminFooter.ejs') %>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

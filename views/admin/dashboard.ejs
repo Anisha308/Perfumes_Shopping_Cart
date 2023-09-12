@@ -1,0 +1,254 @@
+<%- include('../layouts/adminHeader.ejs') %>
+ 
+<div class="container-fluid pt-4 px-4">
+    <div class="row g-4">
+        <div class="col-sm-6 col-xl-3">
+            <div class="rounded d-flex align-items-center justify-content-between p-4 card">
+                <i class="fa fa-chart-line fa-3x text-primary"></i>
+                <div class="ms-3">
+                    <p class="mb-2">Today's Order</p>
+                    <h6 class="mb-0"><%= todaySales %></h6>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-xl-3">
+            <div class="rounded d-flex align-items-center justify-content-between p-4 card">
+                <i class="fa fa-chart-bar fa-3x text-primary"></i>
+                <div class="ms-3">
+                    <p class="mb-2">Total Sale</p>
+                    <h6 class="mb-0"><%= totalsales %></h6>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-xl-3">
+            <div class="rounded d-flex align-items-center justify-content-between p-4 card">
+                <i class="fa fa-chart-area fa-3x text-primary"></i>
+                <div class="ms-3">
+                    <p class="mb-2">Today Revenue</p>
+                    <h6 class="mb-0"><%= Revenue %></h6>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-xl-3">
+            <div class="rounded d-flex align-items-center justify-content-between p-4 card">
+                <i class="fa fa-chart-pie fa-3x text-primary"></i>
+                <div class="ms-3">
+                    <p class="mb-2">Total Revenue</p>
+                    <h6 class="mb-0"><%= revenue %></h6>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div style="height: 20px;"></div>
+
+   <div class="text-center rounded p-4 card">
+                <div class="d-flex align-items-center justify-content-between mb-4">
+                    <h6 class="mb-0">Sales & Revenue</h6>
+                    <!-- <a href="">Show All</a> -->
+                </div>
+                <canvas id="salesChart" width="500" height="400"></canvas>
+            </div>
+         
+</div>
+
+       
+
+
+<div class="container-fluid pt-4 px-4">
+    <div class="row g-4">
+        <div class="col-sm-12">
+            <div class="text-center rounded p-4 card">
+                <div class="d-flex align-items-center justify-content-between mb-4">
+                    <h6 class="mb-0">Order Status</h6>
+                </div>
+                <canvas id="pie-chart" width="100%" height="100%"></canvas>
+            </div>
+        </div>
+        <div style="height: -2px;"></div>
+
+    <div class="row g-2">
+        <div class="col-sm-12">
+            <div class="text-center rounded p-4 card">
+                <div class="d-flex align-items-center justify-content-between mb-4">
+                    <h6 class="mb-0">Sales & Revenue</h6>
+                </div>
+                <canvas id="line-chart" width="300" height="150"></canvas> <!-- Adjust the width and height here -->
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+</div>
+
+            <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+            
+    <span id="totalsales" hidden><%= totalsales %>  </span>
+    <span id="ordershipped" hidden><%= Ordershipped %>  </span>
+    <span id="orderpending" hidden><%= Orderpending %>  </span>
+    <span id="ordercancelled" hidden><%= Ordercancelled %>  </span>
+    <span id="OrderReturn" hidden>  </span>
+    <span id="OrderRefunded" hidden>  </span>
+
+    <span id="monthlysales" hidden><%= JSON.stringify(salesCountByMonth) %></span>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        var salesCountByMonth = JSON.parse(document.getElementById('monthlysales').textContent);
+        const salesCountByMonthObj = {
+            Jan: 0,
+            Feb: 0,
+            March: 0,
+            April: 0,
+            May: 0,
+            June: 0,
+            July:0,
+            August:0,
+            September:0,
+            October:0,
+
+            };
+            
+            
+            salesCountByMonth.forEach((monthData) => {
+            const { month, count } = monthData;
+            switch (month) {
+                case 1:
+                salesCountByMonthObj.Jan = count;
+                break;
+                case 2:
+                salesCountByMonthObj.Feb = count;
+                break;
+                case 3:
+                salesCountByMonthObj.March = count;
+                break;
+                case 4:
+                salesCountByMonthObj.April = count;
+                break;
+                case 5:
+                salesCountByMonthObj.May = count;
+                break;
+                case 6:
+                salesCountByMonthObj.June = count;
+                break;
+                case 7:
+                  salesCountByMonthObj.July = count;
+                  break;
+                  case 8:
+                  salesCountByMonthObj.Aug = count;
+break;
+                  case 9:
+                  salesCountByMonthObj.Sep = count;
+                  break;
+
+                default:
+                break;
+            }
+            });
+            
+            
+            const salesCountJan = salesCountByMonthObj.Jan;
+            const salesCountFeb = salesCountByMonthObj.Feb;
+            const salesCountMarch = salesCountByMonthObj.March;
+            const salesCountApril = salesCountByMonthObj.April;
+            const salesCountMay = salesCountByMonthObj.May;
+            const salesCountJune = salesCountByMonthObj.June;
+            const salesCountJuly = salesCountByMonthObj.July;
+            const salesCountAug = salesCountByMonthObj.Aug;
+            const salesCountSep = salesCountByMonthObj.Sep;
+
+            // Access the chart labels and data passed from the route
+
+        // line chart for monthly sales
+        new Chart(document.getElementById('line-chart'), {
+        type: 'line',
+        data: {
+            labels: ["jan","feb","march","april","may","june","july","Aug","Sept","Oct"],
+            datasets: [{
+            label: 'Sales',
+            data: [ salesCountJan,salesCountFeb,salesCountMarch,salesCountApril,salesCountMay,salesCountJune,salesCountJuly,salesCountAug,salesCountSep],
+            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+      borderColor: 'rgba(0, 0, 0, 1)', // Set the border color to black
+            borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+            y: {
+                beginAtZero: true
+            }
+            }
+        }
+        });
+
+        // second
+
+        let totalsales=Number(document.getElementById('totalsales').innerHTML)
+        let ordershipped=Number(document.getElementById('ordershipped').innerHTML)
+        let orderpending=Number(document.getElementById('orderpending').innerHTML)
+        let ordercancelled=Number(document.getElementById('ordercancelled').innerHTML)
+        let OrderReturn=Number(document.getElementById('OrderReturn').innerHTML)
+        let OrderRefunded=Number(document.getElementById('OrderRefunded').innerHTML)
+        console.log(totalsales, ordershipped, orderpending, ordercancelled,OrderReturn,OrderRefunded)
+
+
+        new Chart(document.getElementById('pie-chart'), {
+        type: 'pie',
+        data: {
+            labels: ['Orders Delivered', 'Orders Shipped', 'Orders Pending', 'OrderRefunded', 'Orders Cancelled','Order Return'],
+            datasets: [{
+                label: 'Sales',
+                data: [totalsales, ordershipped, orderpending, OrderRefunded, ordercancelled,OrderReturn],
+                backgroundColor: [
+                    "rgba(149, 46, 49, 0.7)", 
+                    "rgba(126, 100, 48, 0.7)",
+                    "rgba(12, 100, 48, 0.7)", 
+                    "rgba(37, 91, 76, 0.7)",
+                    "rgba(95, 42, 98, 0.7)",
+                    "rgba(260, 85, 105, 0.7)"
+                ],
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1
+            }]
+        },
+        // options: {
+            // scales: {
+            // y: {
+            //     beginAtZero: true
+            // }
+            // }
+        // }
+        });
+
+            // Access the chart labels and data passed from the route
+        const chartLabels = JSON.parse('<%- chartLabels %>')
+        const chartData = JSON.parse('<%- chartData %>')
+
+        // Create the chart
+        new Chart(document.getElementById('salesChart'), {
+        type: 'bar',
+        data: {
+            labels: chartLabels,
+            datasets: [{
+            label: 'revenue',
+            data: chartData,
+            backgroundColor: 'rgba(50, 150, 150, 0.4)',
+            borderColor: 'rgba(75, 192, 192, 1)',
+            borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+            y: {
+                beginAtZero: true
+            }
+            }
+        }
+        });
+    </script>
+  
+
+    <%- include('../layouts/adminFooter.ejs') %>

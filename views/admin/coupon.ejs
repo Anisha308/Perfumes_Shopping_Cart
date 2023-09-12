@@ -1,0 +1,110 @@
+
+
+
+  <%- include('../layouts/adminFooter.ejs') %>
+<style>
+    
+    * {
+        box-sizing: border-box;
+        padding: 0;
+        margin: 0;
+        font-family: 'Open Sans', sans-serif; /* Use the 'Open Sans' font */
+    }
+
+    body {
+        font-size: 5px; /* Set the default font size for the body */
+        line-height: 1;
+    }
+
+  .right-corner-container {
+    display: flex;
+    justify-content: flex-end;
+  }
+
+    /* Adjust font sizes for different elements */
+    .product-title {
+        font-size: 1rem;
+    }
+
+    .product-price {
+        font-size: 1rem;
+    }
+ .black-icon {
+      color: black;
+    }
+    .product-detail h2 {
+        font-size: 1rem;
+    }
+
+    .product-detail p {
+        font-size: 0rem;
+    }
+.table {
+    width: 100%; /* Set the width to 100% to fill the available space */
+  }
+
+  /* Increase table height */
+  .table-responsive {
+    max-height: none; /* Remove the max-height to allow for greater height */
+  }
+    
+</style>
+
+<%- include('../layouts/adminHeader.ejs') %>
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
+<!-- Add Product button on the right corner -->
+
+    
+      <div class="table-responsive p-5 shadow mb-5 bg-white rounded "style="width=100">
+<h2>Coupon</h2>
+        <div class="right-corner-container">
+          
+  <a href="/add_coupon_page">
+  <button class="btn btn-dark">Add Coupon</button>
+  </a>
+</div>
+<br>
+        <table class="table table-hover">
+          <thead class="table-danger">
+            <tr class="text-center">
+              <th scope="col">No:</th>
+                  <th scope="col">Coupon Code</th>
+                  <th scope="col">expiry Date</th>
+                  <th scope="col">Offer</th>
+                  <th scope="col">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+                <% coupon_data.forEach(function(coupon,index) { %>
+            <tr>
+                  <td><%= index+1 %></td>
+                  <td><%= coupon.coupon %></td>
+                  <td><%= coupon.expiryDate %></td>
+                  <td><%= coupon.offer %></td>
+                  <td>
+                    <a
+                      href="/edit_coupon/<%= coupon._id %>"
+                      class="btn border-shadow update"
+                    >
+                      <span class="text-gradient"
+                        ><i class="fas fa-pencil-alt"></i
+                      ></span>
+                    </a>
+                    <a
+                      href="/delete_coupon/<%= coupon._id%>"
+                      class="btn border-shadow delete"
+                    >
+                      <span class="text-gradient"
+                        ><i class="fas fa-times"></i
+                      ></span>
+                    </a>
+                  </td>
+                </tr>
+                <% }) %>
+             
+              
+    
+
+<%- include('../layouts/adminFooter.ejs') %>

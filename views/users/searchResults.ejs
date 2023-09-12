@@ -1,0 +1,10 @@
+<!-- Display search query -->
+<p>Search results for: <%= searchQuery %></p>
+
+<!-- Display search results -->
+<ul>
+  <% results.forEach(result => { %>
+    <li><%= result.name %></li>
+    <!-- Display other result details as needed -->
+  <% }) %>
+</ul>
