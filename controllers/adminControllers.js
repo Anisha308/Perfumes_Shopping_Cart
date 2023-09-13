@@ -21,8 +21,10 @@ const verifyadminLogin = async (req, res) => {
   try {
     const email = req.body.email;
     const password = req.body.password;
+    console.log(password)
 
     const adminData = await admin.findOne({ email: email });
+    
     if (adminData.password === password) {
       if (adminData) {
         req.session.admin_id = adminData._id;
