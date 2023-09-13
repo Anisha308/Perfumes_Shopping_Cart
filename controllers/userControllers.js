@@ -132,13 +132,13 @@ const insertUser = async (req, res) => {
    
     const otp = Math.floor(100000 + Math.random() * 900000);
     req.session.otp = otp;
-
+console.log(otp,'ooo')
     const phoneNumbers = [mobile]; // Add other phone numbers here if needed
     for (const phoneNumber of phoneNumbers) {
       const verification = await client.verify.v2
         .services(verifySid)
         .verifications.create({ to: `+91${phoneNumber}`, channel: "sms" });
-      console.log(`OTP sent to ${phoneNumber}: ${otp}`);
+      console.log(`OTP sent to +91${phoneNumber}: ${otp}`);
     }
     res.render("verifyotp");
   } catch (error) {
