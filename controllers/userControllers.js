@@ -138,7 +138,7 @@ console.log(otp,'ooo')
       const verification = await client.verify.v2
         .services(verifySid)
         .verifications.create({ to: `+91${phoneNumber}`, channel: "sms" });
-      console.log(`OTP sent to +91${phoneNumber}: ${otp}`);
+      console.log(`OTP sent to ${phoneNumber}: ${otp}`);
     }
     res.render("verifyotp");
   } catch (error) {
