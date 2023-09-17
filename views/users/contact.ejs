@@ -1,0 +1,57 @@
+<%- include('../layouts/userHeader.ejs') %>
+
+<style>
+    .section_gap_bottom {
+        padding-top: 170px;
+    }
+    
+    .contact-card i {
+        font-size: 31px; /* Adjust the icon size as needed */
+        color: #ff8800; /* Set the desired icon color */
+    }
+</style>
+
+<!--================Contact Area =================-->
+<section class="contact_area section_gap_bottom">
+    <div class="container">
+        <div class="row">
+            <!-- Card 1: Address -->
+            <div class="col-lg-4 contact-card">
+                <div class="card">
+                    <div class="card-body">
+                        <i class="lnr lnr-home"></i>
+                        <h5 class="card-title">Address</h5>
+                        <p class="card-text">California, United States</p>
+                        <p class="card-text">Santa Monica Boulevard</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 2: Phone Number -->
+            <div class="col-lg-4 contact-card">
+                <div class="card">
+                    <div class="card-body">
+                        <i class="lnr lnr-phone-handset"></i>
+                        <h5 class="card-title">Phone Number</h5>
+                        <p class="card-text"><a href="#">00 (440) 9865 562</a></p>
+                        <p class="card-text">Mon to Fri 9am to 6 pm</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 3: Email -->
+            <div class="col-lg-4 contact-card">
+                <div class="card">
+                    <div class="card-body">
+                        <i class="lnr lnr-envelope"></i>
+                        <h5 class="card-title">Email</h5>
+                        <p class="card-text"><a href="#">support@colorlib.com</a></p>
+                        <p class="card-text">Send us your query anytime!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<%- include('../layouts/userFooter.ejs') %>

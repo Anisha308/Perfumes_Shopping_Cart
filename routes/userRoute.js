@@ -83,10 +83,10 @@ user_route.get("/forgotOtpVerify",auth.isLogout, userController.loadOtpPage);
 user_route.post("/forgotOtpVerify", userController.forgotOtpverify);
 
 // Load reset password page
-user_route.get("/resetpassword", auth.isLogout, userController.loadrewritePassword);
+user_route.get("/resetpassword",  userController.loadrewritePassword);
 user_route.post(
   "/resetpassword",
-  auth.isLogout,
+  
   userController.resetPassword
 );
 
@@ -146,5 +146,5 @@ user_route.post("/pricerange", userController.pricerange);
 user_route.post("/coupon", auth.isLogin, orderController.coupon);
 user_route.post("/cancel_coupon", orderController.cancelCoupon);
 
-
+user_route.get('/contact',userController.contact)
 module.exports = user_route;

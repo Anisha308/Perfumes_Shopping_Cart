@@ -54,7 +54,7 @@ const insertUser = async (req, res) => {
     }
 
     const generatedReferralCode = await generateReferralCode();
-
+console.log(generatedReferralCode)
     req.session.user = {
       username: req.body.name,
       email: req.body.email,
@@ -130,15 +130,12 @@ const insertUser = async (req, res) => {
 
   
    
-    const otp = Math.floor(100000 + Math.random() * 900000);
-    req.session.otp = otp;
-console.log(otp,'ooo')
+
     const phoneNumbers = [mobile]; // Add other phone numbers here if needed
     for (const phoneNumber of phoneNumbers) {
       const verification = await client.verify.v2
         .services(verifySid)
         .verifications.create({ to: `+91${phoneNumber}`, channel: "sms" });
-      console.log(`OTP sent to ${phoneNumber}: ${otp}`);
     }
     res.render("verifyotp");
   } catch (error) {
@@ -198,27 +195,36 @@ const startOtpTimer = (req, res, next) => {
 const verifyOtp = async (req, res) => {
   try {
     const otp = req.body.otp;
-    if (otp == req.session.otp) {
-      // OTP is correct, proceed with login
-      const userData = req.session.user;
-      req.session.user_id = req.session.user_id;
-      req.session.otp = undefined; // Clear OTP after successful verification
-      const user = new User({
-        username: userData.username,
-        email: userData.email,
-        mobile: userData.mobile,
-       
-        password: userData.password,
-      });
-      req.session.user = null;
-      
-      await user.save();
-      // return res.redirect('/login');
-      return res.render("login", { message: "Register successful" });
-    } else {
-      // Incorrect OTP
-      return res.render("verifyotp", { message: "Incorrect OTP" });
+    const userData = req.session.user;
+      const verification = await client.verify.v2
+        .services(verifySid)
+        .verificationChecks.create({
+          to: `+91${userData.mobile}`,
+          code: otp,
+        });
+  if (verification.status === "approved") {
+      console.log("Verification successful!");
+
+    req.session.user_id = req.session.user_id;
+    const user = new User({
+      username: userData.username,
+      email: userData.email,
+      mobile: userData.mobile,
+
+      password: userData.password,
+      referralCode:userData.referralCode
+    });
+    req.session.user = null;
+
+    await user.save();
+    // return res.redirect('/login');
+    return res.render("login", { message: "Register successful" });
+  } else {
+    // Incorrect OTP
+    console.log("verification not success")
+    return res.render("verifyotp", { message: "Incorrect OTP" });
     }
+    
   } catch (error) {
     console.log(error.message);
     return res.render("verifyotp", { message: "An error occurred" });
@@ -230,25 +236,19 @@ const verifyOtp = async (req, res) => {
 // 
 const resendOtp = async (req, res) => {
   try {
-   const otp = Math.floor(100000 + Math.random() * 900000);
-   const mobile = req.session.user.mobile; // Assuming 'user' object contains 'mobile'
-   const phoneNumbers = [mobile]; // Add other phone numbers here if needed
-   //
-   for (const phoneNumber of phoneNumbers) {
-     const verification = await client.verify.v2
-       .services(verifySid)
-       .verifications.create({ to: `+91${phoneNumber}`, channel: "sms" });
-
-     console.log(`OTP sent to ${phoneNumber}: ${otp}`);
-   }
-  
-
-    // Store the OTP and user data in the session
-    req.session.otp = otp;
     const userData = req.session.user;
-
     if (!userData) {
-      res.status(400).json({ message: "Invalid or expired session" });
+      return res.status(400).json({ message: "Invalid or expired session" });
+    }
+
+    // Assuming you have already defined the `client` and `verifySid` somewhere
+    const mobile = userData.mobile;
+    const phoneNumbers = [mobile]; // Add other phone numbers here if needed
+
+    for (const phoneNumber of phoneNumbers) {
+      const verification = await client.verify.v2
+        .services(verifySid)
+        .verifications.create({ to: `+91${phoneNumber}`, channel: "sms" });
     }
 
     req.session.user = {
@@ -257,6 +257,7 @@ const resendOtp = async (req, res) => {
       mobile: userData.mobile,
       password: userData.password,
       is_admin: userData.is_admin,
+      referralCode: userData.referralCode,
     };
 
     res.render("verifyotp", { message: "OTP resent successfully" });
@@ -335,25 +336,24 @@ const loadForgotPassword = async (req, res) => {
 
 const forgotVerifyNumber = async (req, res) => {
   try {
-    const userMobile = req.body.mobile; // Assuming you receive the mobile number in the request
-    const user = await User.findOne({ mobile: req.body.mobile });
-    console.log(user,'user');
-    req.session.user = user;
-    if (!user) {
-      res.render("forgotpassword", { message: "user not registered" });
-    } else {
-
-      const forgototp = Math.floor(100000 + Math.random() * 900000);
-      req.session.forgotOtp = forgototp;
-const phoneNumbers = [userMobile]; // Add other phone numbers here if needed
-for (const phoneNumber of phoneNumbers) {
-  const verification = await client.verify.v2
-    .services(verifySid)
-    .verifications.create({ to: `+91${phoneNumber}`, channel: "sms" });
-  console.log(`Forgot OTP sent to ${phoneNumber}: ${forgototp}`);
-}
-      res.render("forgotOtpVerify");
+    const mobile = req.body.mobile; // Change this based on how mobile is sent in your request
+console.log(mobile,'mob')
+    // Check if a mobile number is provided in the request
+    if (!mobile) {
+      return res.status(400).json({ message: "Mobile number is required" });
     }
+
+    // Assuming you have already defined the `client` and `verifySid` somewhere
+    const phoneNumbers = [mobile]; // Add other phone numbers here if needed
+
+    for (const phoneNumber of phoneNumbers) {
+      const verification = await client.verify.v2
+        .services(verifySid)
+        .verifications.create({ to: `+91${phoneNumber}`, channel: "sms" });
+    }
+
+      res.render("forgotOtpVerify",{mobile});
+    
   } catch (error) {
     console.log(error.message);
   }
@@ -395,14 +395,33 @@ const forgotResendOtp = async (req, res) => {
 const forgotOtpverify = async (req, res) => {
 
   try {
-    const enteredOtp = req.body.otp.trim(); // Trim whitespace
-    const storedOtp = String(req.session.forgotOtp).trim(); // Convert to string and trim whitespace
+    const otp = req.body.otp;
+    const mobile = req.body.mobile; // Get the mobile number from the request
+    console.log(mobile,'ppp');
+     if (!mobile) {
+       return res.status(400).json({ message: "Mobile number is required" });
+     }
+    const userData = await User.findOne({ mobile: mobile });
 
-    if (enteredOtp !== storedOtp) {
-      return res.render("forgotOtpVerify", { message: "Invalid OTP" });
+     if (!userData) {
+       return res.status(404).json({ message: "User not found" });
+     }
+
+    console.log(userData, "Anisha ");
+    const verification = await client.verify.v2
+      .services(verifySid)
+      .verificationChecks.create({
+        to: `+91${userData.mobile}`,
+        code: otp,
+      });
+    if (verification.status === "approved") {
+      console.log("Verification successful!");
+
+      req.session.user_id = userData._id;
+      console.log(req.session.user_id,'llll');
+      // If OTP is valid, you can proceed with the desired action, such as allowing the user to reset their password
+      res.render("resetpassword", { user_id: req.session.user_id });
     }
-    // If OTP is valid, you can proceed with the desired action, such as allowing the user to reset their password
-    res.render("resetpassword");
   } catch (error) {
     console.log(error.message);
   }
@@ -418,7 +437,9 @@ const loadrewritePassword = async (req, res) => {
 };
 
 const resetPassword = async (req, res) => {
+  console.log('js');
   try {
+    console.log("jaii");
     const newPassword = req.body.newPassword;
     const confirmPassword = req.body.confirmPassword;
 
@@ -427,7 +448,8 @@ const resetPassword = async (req, res) => {
         message: "Both password fields are required",
       });
     }
-
+    console.log(newPassword, "jkjiki");
+    console.log(confirmPassword, "jjjjjkoppo");
     if (newPassword !== confirmPassword) {
       return res.render("resetpassword", { message: "Passwords do not match" });
     }
@@ -436,13 +458,14 @@ const resetPassword = async (req, res) => {
     const newPasswordHash = await bcrypt.hash(newPassword, 10);
 
     // Update the user's password in the database
-    const user_id = req.session.user._id; // Assuming 'user' is correctly set in the session
+    const user_id = req.session.user_id; // Access the user_id from the session
+    console.log(user_id, "hhhsssewwe");
     const user = await User.findByIdAndUpdate(
       user_id,
       { password: newPasswordHash },
       { new: true }
     );
-
+    console.log('se',user);
     if (!user) {
       return res.redirect("/login");
     }
@@ -459,7 +482,7 @@ const resetPassword = async (req, res) => {
   }
 };
 
-const ITEMS_PER_PAGE = 12;
+const ITEMS_PER_PAGE = 1;
 const showProduct = async (req, res) => {
   try {
     const page = +req.query.page || 1;
@@ -624,7 +647,7 @@ const changePassword = async (req, res) => {
     }
   let message = null
 
- if (newPassword === currentPassword) {
+    if (newPassword === currentPassword) {
    return res.render("changePassword", {
      message: "New passwords should not match with currentpassword",
    });
@@ -635,15 +658,16 @@ const changePassword = async (req, res) => {
         message: "New passwords do not match"
       });
     }
-     if (newPassword !== currentPassword) {
+    if (newPassword === currentPassword) {
        return res.render("changePassword", {
-         message: "New passwords should not match with currentpassword",
+         message: "New passwords should not 'match with currentpassword",
        });
      }
     
     // Check if the current password matches the stored hashed password
     const passwordMatch = await bcrypt.compare(currentPassword, user.password);
     if (!passwordMatch) {
+      console.log('ii');
       return res.render("changePassword", {
         message: "Current password is incorrect"
       });
@@ -653,8 +677,9 @@ const changePassword = async (req, res) => {
     user.password = newPasswordHash;
     await user.save();
 
-    return res.render("changePassword", {
-      message: "Password changed successfully"
+    return res.render("profile", {
+      user: user,
+      message: "Password changed successfully",
     });
   } catch (error) {
     console.log(error.message);
@@ -810,6 +835,14 @@ const pricerange = async (req, res) => {
   }
 };
 
+const contact = async (req, res) => {
+  try {
+    res.render('contact')
+  } catch(error) {
+    console.log(error.message)
+  }
+}
+
 const userLogout = async (req, res) => {
   try {
     req.session.destroy();
@@ -847,4 +880,5 @@ module.exports = {
   search_product,
   pricerange,
   resetPassword,
+  contact
 };

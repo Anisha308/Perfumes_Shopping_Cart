@@ -39,7 +39,7 @@ const userSchema = new mongoose.Schema({
   coupons: {
     type: [String],
   },
-  referralCode: { type: String, unique: true },
+  referralCode: { type: String, },
 });
 
 module.exports = mongoose.model("User", userSchema);

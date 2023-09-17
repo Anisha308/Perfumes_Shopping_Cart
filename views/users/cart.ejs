@@ -87,7 +87,7 @@
                         class="btn btn-link px-2"
                         onclick="incrementQuantity('<%= product._id %>','<%= cartId %>')"
                       >
-                        <i class="fa-sharp fa-light fa-plus"></i>
+<i class="fas fa-plus"></i>
 
                       </button>
 
@@ -197,7 +197,7 @@
     </div>
   </div>
 </section>
-
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
  
@@ -289,16 +289,19 @@
     const quantityInput = document.querySelector(
       `#quantity_${cartId}_${productId}`
     );
+    console.log(quantityInput,'ppoo');
     // Create the data object with the payload
     const quantity = parseInt(quantityInput.value);
-    
+    console.log(quantity,'oooo');
   if (quantity === 1) {
     return;
   }
+   
+
     
     const data = { productId, cartId, quantity };
 
-   
+   console.log('d',data);
    fetch("/decrementQuantity", {
     method: "POST",
     headers: {
@@ -316,7 +319,7 @@
     if (data.success) {
       // Update the quantity input value
       quantityInput.value = data.quantity;
-      
+      console.log('koii');
       // Update the product total price
       const productTotalPriceElement = document.querySelector(
         `#product-total-price-${cartId}_${productId}`

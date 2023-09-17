@@ -621,7 +621,6 @@ module.exports = {
   placeOrder,
   order_status,
   orderUpdate,
-
   order_List,
   UserorderUpdate,
   cancelUserOrder,

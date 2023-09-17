@@ -7,9 +7,10 @@
       content="width=device-width, initial-scale=1, shrink-to-fit=no"
     />
     <!-- Favicon-->
-    <link rel="shortcut icon" href="img/fav.png" />
+<link rel="icon" href="images/white.png" sizes="200x200" type="image/png">
+
     <!-- Author Meta -->
-    <meta name="author" content="CodePixar" />
+    <meta name="author" coantent="CodePixar" />
     <!-- Meta Description -->
     <meta name="description" content="" />
     <!-- Meta Keyword -->
@@ -51,8 +52,9 @@
   <!--// Toast-->
     <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 
-
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   </head>
 
 <style>
@@ -63,31 +65,38 @@
 }
 .nav-link {
   font-size: 18px; /* Adjust the font size as needed */
+
 }
 h1, h2, h3, h4, h5, h6 {
   font-family: sans-serif; /* Replace with your desired font */
   font-weight: bold; /* Adjust the font weight as needed */
 }
-.log{
-  padding-top: 20px;
-}
 
+
+
+   .logo_h {
+    max-width: 9%; /* Ensure the logo doesn't exceed its container's width */
+    height:auto; /* Maintain the original aspect ratio */
+    display: block; /* Remove any default inline styling */
+    margin: 0 auto; /* Center the logo horizontally (optional) */
+  }
+ .cart{
+  padding-top: 10px;
+  color: black;
+ }   
+ .logo{
+  height: 200%;
+ }
 </style>
   <body>
     <!-- Start Header Area -->
     <header class="header_area sticky-header">
       <div class="main_menu">
         <nav class="navbar navbar-expand-lg navbar-light main_box">
-          <div class="container">
+          <div class="container logo">
             <!-- Brand and toggle get grouped for better mobile display -->
-            <a class="navbar-brand logo_h" href="#">
-              <img
-                src="images/Parfumblack.png"
-                alt=""
-                width="100"
-                height="100"
-              />
-            </a>
+      <img class="navbar-brand logo_h" src="images/white.png"alt="Perfume Logo">
+
             <button
               class="navbar-toggler"
               type="button"
@@ -106,7 +115,7 @@ h1, h2, h3, h4, h5, h6 {
               class="collapse navbar-collapse offset"
               id="navbarSupportedContent"
             >
-              <ul class="nav navbar-nav menu_nav ml-auto">
+              <ul class="nav navbar-nav menu_nav ml-auto home">
                 <li class="nav-item active">
                   <a class="nav-link" href="/home">Home</a>
                 </li>
@@ -114,50 +123,32 @@ h1, h2, h3, h4, h5, h6 {
   <a href="/showProduct" class="nav-link">Shop</a>
 </li>
 
-                  <!-- <ul class="dropdown-menu">
-									<li class="nav-item"><a class="nav-link" href="category.html">Shop Category</a></li>
-									<li class="nav-item"><a class="nav-link" href="single-product.html">Product Details</a></li>
-									<li class="nav-item"><a class="nav-link" href="checkout.html">Product Checkout</a></li>
-									<li class="nav-item"><a class="nav-link" href="cart.html">Shopping Cart</a></li>
-									<li class="nav-item"><a class="nav-link" href="confirmation.html">Confirmation</a></li>
-								</ul> -->
                 </li>
-                <!-- <li class="nav-item submenu dropdown">
-								<a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
-								 aria-expanded="false">Blog</a>
-								<ul class="dropdown-menu">
-									<li class="nav-item"><a class="nav-link" href="blog.html">Blog</a></li>
-									<li class="nav-item"><a class="nav-link" href="single-blog.html">Blog Details</a></li>
-								</ul>
-							</li> -->
+             
              <li class="nav-item">
   <a href="/profile" class="nav-link">Profile</a>
 </li>
 
                 <li class="nav-item">
-                  <a class="nav-link" href="#">Contact</a>
+                  <a class="nav-link" href="/contact">Contact</a>
                 </li>
-              </ul>
-              <ul class="nav navbar-nav navbar-right">
-                <li class="nav-item">
+             
+                <li class="nav-item cart">
                   <a href="/cart" class="cart"><span class="ti-bag"></span></a>
                 </li>
-                <li class="nav-item">
-                  <button class="search">
-                    <span class="lnr lnr-magnifier" id="search"></span>
-                  </button>
-                </li>
-              </ul>
+                
+             
               <ul class="menu log">
                 <% if (!locals.User) { %>
                 <li class="nav-item">
-                  <a class="nav-link" href="/login">Login</a>
+      <a class="nav-link" href="/login" style="color: rgb(243, 0, 0);">Login</a>
                 </li>
                 <% } else { %>
                 <li class="nav-item">
-                  <a class="nav-link" href="/logout">Logout</a>
+      <a class="nav-link" href="/logout" style=" color: rgb(255, 44, 7);">Logout</a>
                 </li>
                 <% } %>
+           
               </ul>
             </div>
           </div>
