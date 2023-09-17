@@ -482,7 +482,7 @@ const resetPassword = async (req, res) => {
   }
 };
 
-const ITEMS_PER_PAGE = 1;
+const ITEMS_PER_PAGE = 8;
 const showProduct = async (req, res) => {
   try {
     const page = +req.query.page || 1;
