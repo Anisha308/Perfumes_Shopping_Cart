@@ -203,7 +203,7 @@ const verifyOtp = async (req, res) => {
           code: otp,
         });
   if (verification.status === "approved") {
-      console.log("Verification successful!");
+      console.log("kkVerification successful!");
 
     req.session.user_id = req.session.user_id;
     const user = new User({
@@ -379,7 +379,7 @@ const forgotResendOtp = async (req, res) => {
         .services(verifySid)
         .verifications.create({ to: `+91${phoneNumber}`, channel: "sms" });
 
-      console.log(`OTP sent to ${phoneNumber}: ${resendOtp}`);
+      console.log(`OTP jjj sent to ${phoneNumber}: ${resendOtp}`);
     }
     req.session.forgotOtp = resendOtp;
 

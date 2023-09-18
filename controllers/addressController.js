@@ -97,13 +97,11 @@ const user_Address = async (req, res) => {
 };
 
 const pdeleteAddress = async (req, res) => {
-  console.log("haii");
   const addressId = req.params.addressId;
-  console.log(addressId, "djkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk");
   try {
     // Delete the address by ID
     const deletedAddress = await Address.findByIdAndDelete({ _id: addressId });
-    console.log(deletedAddress, "dhfjjkk");
+  
     if (!deletedAddress) {
       // Address not found
       // req.flash("error", "Address not found");

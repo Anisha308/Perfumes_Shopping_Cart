@@ -81,7 +81,7 @@ const loadUser = async (req, res) => {
       .skip((currentPage - 1) * ITEMS_PER_PAGE)
       .limit(ITEMS_PER_PAGE);
 
-    res.render("adminhome", {
+    res.render("adminHome", {
       user: userData,
       currentPage,
       hasNextPage: ITEMS_PER_PAGE * currentPage < totalUsers,

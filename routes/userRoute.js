@@ -80,7 +80,7 @@ user_route.post('/changepassword',auth.isLogin,userController.changePassword)
 user_route.get("/forgotOtpVerify",auth.isLogout, userController.loadOtpPage);
 
 // Verify OTP and allow password reset
-user_route.post("/forgotOtpVerify", userController.forgotOtpverify);
+user_route.post("/forgotOtpVerify",userController.forgotOtpverify);
 
 // Load reset password page
 user_route.get("/resetpassword",  userController.loadrewritePassword);
@@ -144,7 +144,7 @@ user_route.post("/pricerange", userController.pricerange);
 
 
 user_route.post("/coupon", auth.isLogin, orderController.coupon);
-user_route.post("/cancel_coupon", orderController.cancelCoupon);
+user_route.post("/cancel_coupon",auth.isLogin, orderController.cancelCoupon);
 
 user_route.get('/contact',userController.contact)
 module.exports = user_route;
