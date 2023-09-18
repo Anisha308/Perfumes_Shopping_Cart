@@ -46,7 +46,7 @@ const loadHome = async (req, res) => {
 
     if (isAuthenticated) {
       const users = await User.find(); // Modify this query based on your database schema
-      res.render("adminhome", { user: users });
+      res.render("adminHome", { user: users });
     } else {
       // If the user is not authenticated, redirect to the 'adminlogin' page
       res.redirect("/adminlogin");
