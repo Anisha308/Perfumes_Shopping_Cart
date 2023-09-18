@@ -53,10 +53,12 @@ admin_route.use(
 
 admin_route.get(
   "/adminlogin",
-  adminauth.isAdminLogout,
+  // adminauth.isAdminLogout,
   adminControllers.loadlogin
 );
 admin_route.post("/adminlogin", adminControllers.verifyadminLogin);
+
+
 admin_route.get(
   "/dashboard",
   adminauth.isAdminLogin,
