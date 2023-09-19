@@ -117,7 +117,7 @@ user_route.post("/addProfileaddress",auth.isLogin, addressController.addProfileA
 user_route.post("/addAddress", auth.isLogin,addressController.addAddress)
 user_route.post('/placeOrder/:id',auth.isLogin, orderController.placeOrder);
 
-user_route.post("/delete/:addressId",auth.isLogin,addressController.pdeleteAddress);
+user_route.post("/deletes/:addressId",auth.isLogin,addressController.pdeleteAddress);
 
 //orerlist
 

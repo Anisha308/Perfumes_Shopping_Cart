@@ -130,12 +130,7 @@ const unBlockUser = async (req, res) => {
 
 const loadDashboard = async (req, res) => {
   try {
-    // const preDate = "";
-    // const postDate = "";
-    // const order_data = await Order.find()
-    //   .populate("user")
-    //   .populate("items.product")
-    // .populate("items.stock");
+   
     const userId = req.session?.user?.id;
     const user = await User.findById(userId);
     const today = new Date().toISOString().split("T")[0];

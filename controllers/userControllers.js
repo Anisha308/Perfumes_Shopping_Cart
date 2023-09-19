@@ -4,7 +4,7 @@ const {
 const User = require("../models/usermodel");
 const Product = require("../models/productmodel");
 const Address = require("../models/addressmodell");
-const Category = require('../models/categorymodel');
+const Category = require("../models/categorymodel");
 const bcrypt = require("bcrypt");
 
 const Quantity = require("../models/quantitymodel");
@@ -54,7 +54,7 @@ const insertUser = async (req, res) => {
     }
 
     const generatedReferralCode = await generateReferralCode();
-console.log(generatedReferralCode)
+    console.log(generatedReferralCode);
     req.session.user = {
       username: req.body.name,
       email: req.body.email,
@@ -128,9 +128,6 @@ console.log(generatedReferralCode)
       await referrer.save();
     }
 
-  
-   
-
     const phoneNumbers = [mobile]; // Add other phone numbers here if needed
     for (const phoneNumber of phoneNumbers) {
       const verification = await client.verify.v2
@@ -143,7 +140,6 @@ console.log(generatedReferralCode)
     return res.render("register", { message: "an error occured" });
   }
 };
-
 
 const generateReferralCode = async (req, res) => {
   try {
@@ -196,44 +192,41 @@ const verifyOtp = async (req, res) => {
   try {
     const otp = req.body.otp;
     const userData = req.session.user;
-      const verification = await client.verify.v2
-        .services(verifySid)
-        .verificationChecks.create({
-          to: `+91${userData.mobile}`,
-          code: otp,
-        });
-  if (verification.status === "approved") {
+    const verification = await client.verify.v2
+      .services(verifySid)
+      .verificationChecks.create({
+        to: `+91${userData.mobile}`,
+        code: otp,
+      });
+    if (verification.status === "approved") {
       console.log("kkVerification successful!");
 
-    req.session.user_id = req.session.user_id;
-    const user = new User({
-      username: userData.username,
-      email: userData.email,
-      mobile: userData.mobile,
+      req.session.user_id = req.session.user_id;
+      const user = new User({
+        username: userData.username,
+        email: userData.email,
+        mobile: userData.mobile,
 
-      password: userData.password,
-      referralCode:userData.referralCode
-    });
-    req.session.user = null;
+        password: userData.password,
+        referralCode: userData.referralCode,
+      });
+      req.session.user = null;
 
-    await user.save();
-    // return res.redirect('/login');
-    return res.render("login", { message: "Register successful" });
-  } else {
-    // Incorrect OTP
-    console.log("verification not success")
-    return res.render("verifyotp", { message: "Incorrect OTP" });
+      await user.save();
+      // return res.redirect('/login');
+      return res.render("login", { message: "Register successful" });
+    } else {
+      // Incorrect OTP
+      console.log("verification not success");
+      return res.render("verifyotp", { message: "Incorrect OTP" });
     }
-    
   } catch (error) {
     console.log(error.message);
     return res.render("verifyotp", { message: "An error occurred" });
   }
 };
 
-
-
-// 
+//
 const resendOtp = async (req, res) => {
   try {
     const userData = req.session.user;
@@ -266,9 +259,6 @@ const resendOtp = async (req, res) => {
     return res.render("register", { message: "All fields should be filled" });
   }
 };
-
-
-
 
 const verifyLogin = async (req, res) => {
   try {
@@ -313,12 +303,10 @@ const verifyLogin = async (req, res) => {
   }
 };
 
-
 const loadHome = async (req, res) => {
   try {
     const User = req.session.user;
-       const products = await Product.find({});
-
+    const products = await Product.find({});
 
     res.render("home", { User, products });
   } catch (error) {
@@ -337,7 +325,7 @@ const loadForgotPassword = async (req, res) => {
 const forgotVerifyNumber = async (req, res) => {
   try {
     const mobile = req.body.mobile; // Change this based on how mobile is sent in your request
-console.log(mobile,'mob')
+    console.log(mobile, "mob");
     // Check if a mobile number is provided in the request
     if (!mobile) {
       return res.status(400).json({ message: "Mobile number is required" });
@@ -352,8 +340,7 @@ console.log(mobile,'mob')
         .verifications.create({ to: `+91${phoneNumber}`, channel: "sms" });
     }
 
-      res.render("forgotOtpVerify",{mobile});
-    
+    res.render("forgotOtpVerify", { mobile });
   } catch (error) {
     console.log(error.message);
   }
@@ -393,19 +380,18 @@ const forgotResendOtp = async (req, res) => {
 };
 
 const forgotOtpverify = async (req, res) => {
-
   try {
     const otp = req.body.otp;
     const mobile = req.body.mobile; // Get the mobile number from the request
-    console.log(mobile,'ppp');
-     if (!mobile) {
-       return res.status(400).json({ message: "Mobile number is required" });
-     }
+    console.log(mobile, "ppp");
+    if (!mobile) {
+      return res.status(400).json({ message: "Mobile number is required" });
+    }
     const userData = await User.findOne({ mobile: mobile });
 
-     if (!userData) {
-       return res.status(404).json({ message: "User not found" });
-     }
+    if (!userData) {
+      return res.status(404).json({ message: "User not found" });
+    }
 
     console.log(userData, "Anisha ");
     const verification = await client.verify.v2
@@ -418,7 +404,7 @@ const forgotOtpverify = async (req, res) => {
       console.log("Verification successful!");
 
       req.session.user_id = userData._id;
-      console.log(req.session.user_id,'llll');
+      console.log(req.session.user_id, "llll");
       // If OTP is valid, you can proceed with the desired action, such as allowing the user to reset their password
       res.render("resetpassword", { user_id: req.session.user_id });
     }
@@ -437,7 +423,7 @@ const loadrewritePassword = async (req, res) => {
 };
 
 const resetPassword = async (req, res) => {
-  console.log('js');
+  console.log("js");
   try {
     console.log("jaii");
     const newPassword = req.body.newPassword;
@@ -465,13 +451,14 @@ const resetPassword = async (req, res) => {
       { password: newPasswordHash },
       { new: true }
     );
-    console.log('se',user);
+    console.log("se", user);
     if (!user) {
       return res.redirect("/login");
     }
 
     // Clear the OTP from the session
     req.session.forgotOtp = undefined;
+    req.session.user_id = undefined;
 
     return res.render("login", {
       message: "Password changed successfully",
@@ -513,17 +500,15 @@ const showProduct = async (req, res) => {
 
 const productdetail = async (req, res) => {
   try {
-        const User = req.session.user;
+    const User = req.session.user;
     const categoryId = req.query.id;
     const productId = req.query.id;
     const categories = await Category.find({ _id: categoryId });
-     const products = await Product.findOne({ _id: productId }).populate(
-       "category"
-     );
-    
+    const products = await Product.findOne({ _id: productId }).populate(
+      "category"
+    );
 
     const product = await Product.findOne({ _id: productId });
-  
 
     if (!product) {
       console.log("not found");
@@ -531,7 +516,7 @@ const productdetail = async (req, res) => {
 
     const sizeInfo = await Quantity.findOne({ product: productId });
     const sizes = sizeInfo ? sizeInfo.quantities.map((q) => q.size) : [];
-    
+
     // Fetch the quantities data and pass it to the template
     const quantitiesData = await Quantity.find({}).populate("product").exec();
 
@@ -553,7 +538,7 @@ const search_product = async (req, res) => {
     const page = parseInt(req.query.page) || 1;
     const ITEMS_PER_PAGE = 10;
     const skip = (page - 1) * ITEMS_PER_PAGE;
-const categories = await Category.find();
+    const categories = await Category.find();
     const totalProducts = await Product.countDocuments({ is_listed: true });
     const totalPages = Math.ceil(totalProducts / ITEMS_PER_PAGE);
 
@@ -589,15 +574,8 @@ const categories = await Category.find();
   }
 };
 
-
-
-
-
-
 const loadUserProfile = async (req, res) => {
   try {
-  
-
     if (!req.session.user) {
       return res.redirect("/login");
     }
@@ -607,29 +585,27 @@ const loadUserProfile = async (req, res) => {
     if (!user) {
       return res.redirect("/login");
     }
-  const addressItem = await Address.find({ user: user_id });
-   
-    res.render("profile", { user,addressItem });
+    const addressItem = await Address.find({ user: user_id });
+
+    res.render("profile", { user, addressItem });
   } catch (error) {
     console.log(error.message);
   }
 };
 
 const showchangePassword = async (req, res) => {
-
   try {
     const User = req.session.user;
-    res.render("changepassword",{User,message:null});
+    res.render("changepassword", { User, message: null });
   } catch (error) {
-    console.log(error.message)
+    console.log(error.message);
   }
-}
+};
 
 const changePassword = async (req, res) => {
   try {
     const user_id = req.session.user_id;
     const user = await User.findById(user_id);
-    
 
     if (!user) {
       return res.redirect("/login");
@@ -637,39 +613,41 @@ const changePassword = async (req, res) => {
 
     // const { currentPassword, newPassword, confirmPassword } = req.body;
 
-    const currentPassword = req.body.currentPassword
-    const newPassword = req.body.newPassword
+    const currentPassword = req.body.currentPassword;
+    const newPassword = req.body.newPassword;
 
-    const confirmPassword = req.body.confirmPassword
+    const confirmPassword = req.body.confirmPassword;
 
     if (!currentPassword || !newPassword || !confirmPassword) {
-      return res.render('changePassword',{message:"All fields must be filled"})
+      return res.render("changePassword", {
+        message: "All fields must be filled",
+      });
     }
-  let message = null
+    let message = null;
 
     if (newPassword === currentPassword) {
-   return res.render("changePassword", {
-     message: "New passwords should not match with currentpassword",
-   });
- }
-    
+      return res.render("changePassword", {
+        message: "New passwords should not match with currentpassword",
+      });
+    }
+
     if (newPassword !== confirmPassword) {
       return res.render("changePassword", {
-        message: "New passwords do not match"
+        message: "New passwords do not match",
       });
     }
     if (newPassword === currentPassword) {
-       return res.render("changePassword", {
-         message: "New passwords should not 'match with currentpassword",
-       });
-     }
-    
+      return res.render("changePassword", {
+        message: "New passwords should not 'match with currentpassword",
+      });
+    }
+
     // Check if the current password matches the stored hashed password
     const passwordMatch = await bcrypt.compare(currentPassword, user.password);
     if (!passwordMatch) {
-      console.log('ii');
+      console.log("ii");
       return res.render("changePassword", {
-        message: "Current password is incorrect"
+        message: "Current password is incorrect",
       });
     }
     // Hash the new password before saving
@@ -685,8 +663,6 @@ const changePassword = async (req, res) => {
     console.log(error.message);
   }
 };
-
-
 
 const editProfile = async (req, res) => {
   try {
@@ -731,7 +707,6 @@ const editProfile = async (req, res) => {
   }
 };
 
-
 const filterByCategory = async (req, res) => {
   try {
     const page = +req.query.page || 1;
@@ -745,13 +720,13 @@ const filterByCategory = async (req, res) => {
       category: categoryId,
       is_listed: true,
     }); // Get the total number of products
- 
-   
+
     const product = await Product.find({
       category: categoryId,
       is_listed: true,
-    }) .skip((page - 1) * ITEMS_PER_PAGE) // Skip the appropriate number of items based on the page
-  .limit(ITEMS_PER_PAGE);;
+    })
+      .skip((page - 1) * ITEMS_PER_PAGE) // Skip the appropriate number of items based on the page
+      .limit(ITEMS_PER_PAGE);
     const user = req.session.user;
     res.render("showProduct", {
       user,
@@ -781,21 +756,17 @@ const pricerange = async (req, res) => {
     const User = req.session.user;
     const min_price = req.body.min_price;
     const max_price = req.body.max_price;
-    
-  
 
-        const categories = await Category.find();
-    
+    const categories = await Category.find();
+
     const product2 = await Product.find().limit(4);
-    
+
     const product = await Product.find({
       price: { $gte: min_price, $lte: max_price },
     });
-    const procount = await Product
-      .find({
-        price: { $gte: min_price, $lte: max_price },
-      })
-      .countDocuments();
+    const procount = await Product.find({
+      price: { $gte: min_price, $lte: max_price },
+    }).countDocuments();
     if (!procount) {
       const products = []; // Empty array
       res.render("showProduct", {
@@ -837,11 +808,11 @@ const pricerange = async (req, res) => {
 
 const contact = async (req, res) => {
   try {
-    res.render('contact')
-  } catch(error) {
-    console.log(error.message)
+    res.render("contact");
+  } catch (error) {
+    console.log(error.message);
   }
-}
+};
 
 const userLogout = async (req, res) => {
   try {
@@ -880,5 +851,5 @@ module.exports = {
   search_product,
   pricerange,
   resetPassword,
-  contact
+  contact,
 };

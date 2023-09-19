@@ -37,7 +37,7 @@ const addAddress = async (req, res) => {
       });
       await newAddressInstance.save();
     }
-    res.render("/checkout", { User });
+    res.redirect('/checkout')
   } catch (error) {
     console.log(error);
   }
@@ -90,33 +90,49 @@ const user_Address = async (req, res) => {
     }
     const addressItem = await Address.find({ user: user_id });
 
-    res.render("address", { user, addressItem });
-  } catch (error) {
+     res.render("address", { user, addressItem });
+  } catch (error) {    
     console.log(error.message);
   }
 };
 
 const pdeleteAddress = async (req, res) => {
-  const addressId = req.params.addressId;
   try {
+    const user = req.session.user_id.toString();
+    const userFinded = await Address.findOne({ user: user });
+    const addressId = req.params.addressId;
+
+    if (!userFinded) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Find the address by ID
+    const foundData = userFinded.deliveryAddress.find(
+      (item) => item._id.toHexString() === addressId
+    );
+
+    if (!foundData) {
+      return res.status(404).json({ message: "Address not found" });
+    }
+
     // Delete the address by ID
-    const deletedAddress = await Address.findByIdAndDelete({ _id: addressId });
-  
-    if (!deletedAddress) {
-      // Address not found
-      // req.flash("error", "Address not found");
+    const deletedAddress = await Address.updateOne(
+      { _id: userFinded._id },
+      { $pull: { deliveryAddress: { _id: foundData._id } } }
+    );
+
+    if (deletedAddress.nModified === 0) {
       return res.status(404).json({ message: "Address not found" });
     }
 
     // Address deleted successfully
-    // req.flash("success", "Address deleted successfully");
     res.status(200).json({ message: "Address deleted successfully" });
   } catch (error) {
     console.error(error);
-    // req.flash("error", "Failed to delete address");
     res.status(500).json({ message: "Failed to delete address" });
   }
 };
+
 
 const editProfileAddress = async (req, res) => {
   try {
@@ -140,7 +156,7 @@ const editProfileAddress = async (req, res) => {
 
     await Address.updateOne(addressQuery, updateFields);
 
-    res.redirect("/profile");
+    res.redirect("/address");
   } catch (error) {
     console.log(error);
   }
