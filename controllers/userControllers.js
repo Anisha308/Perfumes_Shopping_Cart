@@ -89,7 +89,7 @@ const insertUser = async (req, res) => {
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
     if (!passwordRegex.test(req.body.password)) {
       return res.render("register", {
-        message: "Password must include atleast one capital letter,small letter ,a number and must include special characters @,#,...",
+        message: "password must contain a mix of the following elements:At least one uppercase letter (A-Z) ,At least one lowercase letter(a- z), At least one number (0-9),At least one special character (e.g., !, @, #, $, %, ^, &, *).",
       });
     }
 
