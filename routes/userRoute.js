@@ -22,8 +22,8 @@ const userController = require("../controllers/userControllers");
 const addressController = require("../controllers/addressController");
 // Configure MongoDB session store
 const store = new MongoDBStore({
-  uri: "mongodb://127.0.0.1:27017/fragrancia",
-  collection: "sessions" 
+  uri: "mongodb+srv://anisha:parfum%40123@parfum.rc5drnh.mongodb.net/?retryWrites=true&w=majority",
+  collection: "sessions",
 });
 
 store.on("error", function (error) {
