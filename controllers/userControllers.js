@@ -759,13 +759,13 @@ const pricerange = async (req, res) => {
 
     const categories = await Category.find();
 
-    const product2 = await Product.find().limit(4);
+    const product2 = await Product.find();
 
     const product = await Product.find({
-      price: { $gte: min_price, $lte: max_price },
+      offerprice: { $gte: min_price, $lte: max_price },
     });
     const procount = await Product.find({
-      price: { $gte: min_price, $lte: max_price },
+      offerprice: { $gte: min_price, $lte: max_price },
     }).countDocuments();
     if (!procount.length===0) {
       const products = []; // Empty array
