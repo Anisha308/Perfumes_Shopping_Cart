@@ -89,7 +89,7 @@ const insertUser = async (req, res) => {
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
     if (!passwordRegex.test(req.body.password)) {
       return res.render("register", {
-        message: "Password must be...",
+        message: "Password must include atleast one capital letter,small letter ,a number and must include special characters @,#,...",
       });
     }
 
@@ -767,7 +767,7 @@ const pricerange = async (req, res) => {
     const procount = await Product.find({
       price: { $gte: min_price, $lte: max_price },
     }).countDocuments();
-    if (!procount) {
+    if (!procount.length===0) {
       const products = []; // Empty array
       res.render("showProduct", {
         User,
@@ -785,7 +785,7 @@ const pricerange = async (req, res) => {
       });
     }
     if (product) {
-      const productss = await Product.find();
+      const product2 = await Product.find().limit(4);
       res.render("showProduct", {
         User,
 
