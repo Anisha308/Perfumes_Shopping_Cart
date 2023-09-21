@@ -297,7 +297,7 @@ const verifyLogin = async (req, res) => {
       // Avoid storing the password here
     };
 
-    return res.redirect("/home"); // Redirect to the home page after successful login
+    return res.render("home"); // Redirect to the home page after successful login
   } catch (error) {
     return res.render("login", { message: "An error occurred during login" });
   }
